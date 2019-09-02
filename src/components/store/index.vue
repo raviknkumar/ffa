@@ -6,7 +6,7 @@
                 <add-store @addData="changeActiveTab"></add-store>
             </el-tab-pane>
             <el-tab-pane label="View" id="tab-1" name="1">
-                <view-store :reload-view-store="reloadViewStore"></view-store>
+                <view-store :reload-view-store="reloadViewStore" ></view-store>
             </el-tab-pane>
         </el-tabs>
     </div>

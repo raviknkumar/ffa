@@ -22,7 +22,14 @@
 
     export default {
         name: "viewStore",
-        mounted: function () {
+        props:['reloadViewStore'],
+
+        mounted() {
+            this.$watch('reloadViewStore', response => {
+                if(response === true)
+                    this.getShops();
+                },
+                {immediate: true})
             this.fields.push({key: 'name', label: 'Shop name'});
             this.fields.push({key: 'street', label: 'Street'});
             this.fields.push({key: 'type1', label: 'shop type 1'});
@@ -31,7 +38,6 @@
             this.fields.push({key: 'addressLine2', label: 'Address Line 2'});
             this.fields.push({key: 'phoneNumber', label: 'Phone Number'});
             this.getShops();
-
         },
         data() {
             return {
@@ -48,6 +54,8 @@
         ,
         methods: {
             showData(res) {
+                // eslint-disable-next-line no-console
+                console.log("Shoe Data")
                 this.items = [];
                 if (res != null) {
                     for (let i = 0; i < res.length; i++) {

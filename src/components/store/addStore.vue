@@ -30,9 +30,7 @@
         </div>
 
         <div class="row">
-            <!--            <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3">-->
-            <!--                Street Located-->
-            <!--            </div>-->
+
             <div class="col-9 col-sm-5 col-md-5 col-xl-5 col-lg-5">
                 <el-select v-model="type1" placeholder="select type" filterable>
                     <el-option value="GOI">GOI</el-option>
@@ -137,11 +135,14 @@
 
             addShop() {
                 let data = this.buildDataForAddShopRequest();
-                addShop(data).then(res=>{
-                    if(res.data.success){
+                addShop(data).then(res => {
+                    if (res.data.success) {
                         showSuccessDialog(this.$swal, "Shop added successfully");
+                        this.clearData();
+                        this.$emit('addData', null);
+
                     }
-                }).catch(err=>{
+                }).catch(err => {
                     showErrorDialog(this.$swal, err.message)
                 })
             },
@@ -157,6 +158,16 @@
                 data.phoneNumber = this.phoneNumber;
 
                 return data;
+            },
+
+            clearData() {
+                this.shopName = null,
+                this.street = null;
+                this.addressLine1 = null;
+                this.addressLine2 = null;
+                this.phoneNumber = null;
+                this.type1 = 'GOI';
+                this.type2 = 'Executive Basic'
             }
         }
     }

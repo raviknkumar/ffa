@@ -6,7 +6,7 @@
                     <el-card class="card-image" shadow="always">
                         <div class="hover-card form-header rounded">
                             <div class="d-flex justify-content-center">
-                                <h3><i class="fa fa-lock fa-2x text-white" aria-hidden="false"></i> <strong
+                                <h3><i class="el-icon-lock text-white" aria-hidden="false"></i> <strong
                                         class="text-white">&nbsp;Login </strong></h3>
                             </div>
                         </div>
@@ -61,6 +61,7 @@
 
 <script>
     /* eslint-disable */
+    import {addUserName} from '../../commons/localStoreFunctions'
     export default {
         name: "Login",
         data() {
@@ -74,7 +75,6 @@
         },
         methods: {
             showPwd(){
-                console.log("show");
                 if(this.pwdType === 'password'){
                     this.pwdType = 'text'
                     this.iconClass = 'fa fa-eye-slash'
@@ -86,7 +86,9 @@
                 }
             },
             handleLogin(){
-                localStorage.setItem("username",this.userName)
+                // validate userName
+
+                addUserName(this.userName);
                 this.$router.push({ name: 'home'});
 
             }

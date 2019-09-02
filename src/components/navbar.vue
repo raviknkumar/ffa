@@ -15,6 +15,7 @@
 
             <link rel="stylesheet"
                   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
             <el-dropdown trigger="click" style="color: black">
 
                 <span class="el-dropdown-link">
@@ -30,25 +31,22 @@
 
         <div id="mySidenav" class="sidenav">
             <div class="row">
-                <h3 class="col-6" style="margin-left: 1vw">Sidenav</h3>
+                <div class="col-6 col-sm-6 col-md-6" style="margin-left: 1vw;font-size: 20px">
+                    <el-avatar style="background-color: purple">{{this.avtarText}}</el-avatar>
+                </div>
                 <div class="col-3">
-                    <a href="javascript:void(0)" style="float: right" class="closebtn" @click="closeNav()" id="#closeButton">
+                    <a href="javascript:void(0)" style="float: right" class="closebtn" @click="closeNav()"
+                       id="#closeButton">
                         &times;</a>
                 </div>
             </div>
 
-            <a href="#">About</a>
-            <a href="#">Services</a>
             <router-link to="metrics" @click.native="closeNav()">
-                <i class=""></i>&nbsp;Metrics
+                <i class="fa fa-chart-line"></i>&nbsp;Metrics
             </router-link>
-            <router-link to="addStore" @click.native="closeNav()">
+            <router-link to="store" @click.native="closeNav()">
                 <i class="el-icon-office-building"></i>&nbsp;Add New Shop
             </router-link>
-            <a href="#">About</a>
-            <a href="#">Services</a>
-            <a href="#">Clients</a>
-            <a href="#">Contact</a>
         </div>
 
     </div>
@@ -56,7 +54,7 @@
 
 <script>
 
-    import { routes } from "@/router/index"
+    import {routes} from "@/router/index"
 
     export default {
         name: "navbar",
@@ -65,7 +63,8 @@
                 drawer: false,
                 direction: 'ltr',
                 name: null,
-                size:"20%",
+                size: "20%",
+                avtarText: null,
                 routes
             }
         },
@@ -75,19 +74,20 @@
             },
             openNav() {
                 document.getElementById("mySidenav").style.width = "250px";
+                document.getElementById("main").style.marginLeft = "260px";
                 this.drawer = true
             },
             closeNav() {
                 document.getElementById("mySidenav").style.width = "0";
+                document.getElementById("main").style.marginLeft = "1vw";
                 this.drawer = false
             }
         },
         mounted() {
             if (localStorage.username) {
                 this.name = localStorage.username;
+                this.avtarText = this.name.charAt(0).toUpperCase();
             }
-            // eslint-disable-next-line no-console
-            console.log(routes)
         },
 
     }
@@ -109,7 +109,6 @@
         overflow-y: scroll;
         transition: all 0.25s;
         align-items: stretch;
-
     }
 
     .sidenav a {
@@ -138,56 +137,5 @@
 
     .sidebar li.active > a {
         color: #409eff;
-    }
-
-    @media (max-width: 575.98px) {
-
-        .sidenav{
-            width: 70%;
-        }
-
-        .sidenav a {
-            padding: 3px 3px 4px 4px;
-            text-decoration: none;
-            font-size: 15px;
-            display: block;
-            overflow: auto;
-        }
-    }
-
-    /* Small devices (landscape phones, 576px and up) */
-    @media (min-width: 576px) and (max-width: 767.98px) {
-        .content {
-            width: 75%;
-            height: 75%;
-            margin: auto;
-        }
-    }
-
-    /* Medium devices (tablets, 768px and up) */
-    @media (min-width: 768px) and (max-width: 991.98px) {
-        .content {
-            width: 75%;
-            height: 75%;
-            margin: auto;
-        }
-    }
-
-    /*Large devices (desktops, 992px and up)*/
-    @media (min-width: 992px) and (max-width: 1199.98px) {
-        .content {
-            width: 50%;
-            height: 50%;
-            margin: auto;
-        }
-    }
-
-    /*Extra large devices (large desktops, 1200px and up)*/
-    @media (min-width: 1200px) {
-        .content {
-            width: 50%;
-            height: 50%;
-            margin: auto;
-        }
     }
 </style>

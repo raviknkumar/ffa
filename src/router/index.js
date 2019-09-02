@@ -5,10 +5,7 @@ import Router from 'vue-router'
 import Login from "@/components/login/Login";
 import Home from "@/components/home/index"
 
-import VueBootstrap from 'bootstrap-vue'
-
 Vue.use(Router);
-Vue.use(VueBootstrap);
 
 import 'vue-awesome/icons'
 import signUp from "@/components/login/signUp";
@@ -18,6 +15,18 @@ export const routes = [
         path: '/login',
         component: Login,
         meta: {layout: 'no-navbar',icon:"fa fa-sign-in"}
+    },
+    {
+        path: '/',
+        component: Home,
+        name: 'Login',
+        // eslint-disable-next-line no-unused-vars
+        redirect: to => {
+            if(localStorage.username)
+                return '/home'
+            else
+                return '/login'
+        }
     },
     {
         path: '/home',
@@ -37,9 +46,9 @@ export const routes = [
         component: () => import ("@/components/metrics/index"),
     },
     {
-        path: '/addStore',
-        name: 'Add New Store',
-        component: () => import ("@/components/addStore/index"),
+        path: '/store',
+        name: ' Store Info',
+        component: () => import ("@/components/store/index"),
     },
     {
         path: '*',

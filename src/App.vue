@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app" >
     <navbar v-if="layout"></navbar>
-    <router-view/>
+    <router-view id="main" style="margin-left: 1vw"/>
   </div>
 </template>
 
@@ -26,4 +26,7 @@ export default {
 
 <style>
 
+  #main{
+    overflow: auto;
+  }
 </style>

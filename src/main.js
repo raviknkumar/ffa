@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import './../node_modules/bulma/css/bulma.css';
 
 import router from "../src/router/index"
 
@@ -13,9 +12,12 @@ import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
 import 'vuetify/dist/vuetify.min.css'
 
-import BootstrapVue from 'bootstrap-vue'
+import bootStrapVue from 'bootstrap-vue'
+import sweetAlert from 'vue-sweetalert2'
 
-Vue.use(BootstrapVue);
+Vue.use(bootStrapVue);
+Vue.use(sweetAlert);
+
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 

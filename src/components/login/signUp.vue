@@ -79,7 +79,6 @@
         },
         methods: {
             showPwd(){
-                console.log("show");
                 if(this.pwdType === 'password'){
                     this.pwdType = 'text'
                     this.iconClass = 'fa fa-eye-slash'

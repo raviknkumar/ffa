@@ -46,7 +46,7 @@
 
                             <div class="footer">
                                 <p>Have an account?
-                                    <router-link to="login" class="font-weight-bold">
+                                    <router-link to="/login" class="font-weight-bold">
                                         Sign in
                                     </router-link>
                                 </p>

@@ -19,8 +19,10 @@
               </span>
 
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</el-dropdown-item>
-                    <el-dropdown-item icon="el-icon-circle-plus">Action 2</el-dropdown-item>
+                    <el-dropdown-item command="logout"><i class="fa fa-sign-out" aria-hidden="true">
+                    </i>
+                        <span @click="logout">Logout</span>
+                    </el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </nav>
@@ -49,9 +51,10 @@
             <router-link to="/item" @click.native="closeNav()">
                 <i class="el-icon-shopping-cart-2"></i>&nbsp;Item
             </router-link>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <link rel="stylesheet"
+                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <router-link to="/beats" @click.native="closeNav()">
-            <i class="fa fa-file"></i>&nbsp;Beats
+                <i class="fa fa-file"></i>&nbsp;Beats
             </router-link>
 
         </div>
@@ -62,6 +65,7 @@
 <script>
 
     import {routes} from "@/router/index"
+    import {logout} from "@/commons/commons";
 
     export default {
         name: "navbar",
@@ -88,6 +92,10 @@
                 document.getElementById("mySidenav").style.width = "0";
                 document.getElementById("main").style.marginLeft = "1vw";
                 this.drawer = false
+            },
+            logout() {
+                // eslint-disable-next-line no-undef,no-console
+                logout(localStorage, this.$router);
             }
         },
         mounted() {

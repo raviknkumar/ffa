@@ -43,8 +43,6 @@ exports.formatDateHiphen = function(date){
 }
 
 exports.logout = function(localStorage , router){
-    localStorage.removeItem('auth-token')
-    localStorage.removeItem('auth')
     localStorage.removeItem('user')
     router.push('/login')
 }

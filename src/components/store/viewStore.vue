@@ -17,17 +17,14 @@
 </template>
 
 <script>
-    import {getShops} from "../../api/ffaEndPoints"
-    import {showErrorDialog} from "@/commons/commons";
 
     export default {
         name: "viewStore",
-        props:['reloadViewStore'],
+        props:['tableData'],
 
         mounted() {
-            this.$watch('reloadViewStore', response => {
-                if(response === true)
-                    this.getShops();
+            this.$watch('tableData', response => {
+                this.showData(response);
                 },
                 {immediate: true})
             this.fields.push({key: 'name', label: 'Shop name'});
@@ -37,7 +34,6 @@
             this.fields.push({key: 'addressLine1', label: 'Address line 1'});
             this.fields.push({key: 'addressLine2', label: 'Address Line 2'});
             this.fields.push({key: 'phoneNumber', label: 'Phone Number'});
-            this.getShops();
         },
         data() {
             return {
@@ -45,8 +41,6 @@
                 fields: [],
                 currentPage: 1, perPage: 10,
                 pageOptions: [5, 10, 15], sortBy: null, sortDesc: false, sortDirection: 'asc', filter: null,
-                editInfoDialogFlag: false,
-                tariffInfoToEdit: {},
                 index: null,
                 totalRows: 0
             }
@@ -54,8 +48,6 @@
         ,
         methods: {
             showData(res) {
-                // eslint-disable-next-line no-console
-                console.log("Shoe Data")
                 this.items = [];
                 if (res != null) {
                     for (let i = 0; i < res.length; i++) {
@@ -72,15 +64,6 @@
                     this.totalRows = this.items.length
                 }
             },
-
-            getShops() {
-                let params = {}
-                getShops(params).then(res => {
-                    this.showData(res.data.data);
-                }).catch(err => {
-                    showErrorDialog(this.$swal, err.message);
-                })
-            }
         }
     }
 </script>

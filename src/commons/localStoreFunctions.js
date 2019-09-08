@@ -14,7 +14,7 @@ export function clearUserName() {
     localStorage.removeItem('username')
 }
 
-// export function getUserId() {
-//     let user = JSON.parse(localStorage.getItem('user'));
-//     return user.id;
-// }
+export function getUserId() {
+    let user = JSON.parse(localStorage.getItem('user'));
+    return user!== null ?user.id : null;
+}

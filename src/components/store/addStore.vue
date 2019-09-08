@@ -122,7 +122,7 @@
         name: "addStore",
         data() {
             return {
-                shopName: null,
+                shop: null,
                 street: null,
                 addressLine1: null,
                 addressLine2: null,
@@ -149,7 +149,7 @@
 
             buildDataForAddShopRequest() {
                 let data = {};
-                data.name = this.shopName;
+                data.name = this.shop;
                 data.street = this.street;
                 data.addressLine1 = this.addressLine1;
                 data.addressLine2 = this.addressLine2;

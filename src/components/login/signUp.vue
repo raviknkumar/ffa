@@ -19,8 +19,7 @@
 
                             <div class="form-control-custom">
                                 <label class="grey-text" for="password">Password </label>
-                                <el-input id="password" :type="pwdType" v-model="password" placeholder="password"
-                                          @keyup.enter.native="alert('hello')">
+                                <el-input id="password" :type="pwdType" v-model="password" placeholder="password">
                                     <el-button slot="append" type="primary" class="show-pwd" @click.native="showPwd()" style="background: none">
                                         <i :class="iconClass" aria-hidden="false" ></i>
                                     </el-button>
@@ -29,20 +28,17 @@
 
                             <div class="form-control-custom">
                                 <label class="grey-text" for="password">Confirm Password </label>
-                                <el-input id="conformPassword" :type="pwdType" v-model="confirmPassword" placeholder="confirm password"
-                                          @keyup.enter.native="alert('hello')">
-                                    <el-button slot="append" type="primary" class="show-pwd" @click.native="showPwd()" style="background: none">
-                                        <i :class="iconClass" aria-hidden="false" ></i>
+                                <el-input id="conformPassword" :type="confirmPwdType" v-model="confirmPassword" placeholder="confirm password"
+                                          @keyup.enter.native="signUp">
+                                    <el-button slot="append" type="primary" class="show-pwd" @click.native="showConfirmPwd()" style="background: none">
+                                        <i :class="confirmIconClass" aria-hidden="false" ></i>
                                     </el-button>
                                 </el-input>
                             </div>
 
-
-                            <link rel="stylesheet"
-                                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
                             <div class="row d-flex justify-content-center form-control-custom">
                                 <div class="">
-                                    <el-button round class="btn-block z-depth-1 text-white" style="background: #1867c0">
+                                    <el-button round class="btn-block z-depth-1 text-white" style="background: #1867c0" @click.native="signUp">
                                         <strong class="text-white">Sign up&nbsp; <i class="fa fa-sign-in" aria-hidden="false"></i></strong>
                                     </el-button>
                                 </div>
@@ -65,6 +61,10 @@
 
 <script>
     /* eslint-disable */
+    import {signUp} from "@/api/ffaEndPoints";
+    import {addUser, addUserName} from "@/commons/localStoreFunctions";
+    import {showErrorDialog, showWarningDialog} from "@/commons/commons";
+
     export default {
         name: "signUp",
         data() {
@@ -73,7 +73,9 @@
                 password: null,
                 confirmPassword:null,
                 pwdType:'password',
+                confirmPwdType:'password',
                 iconClass: 'fa fa-eye',
+                confirmIconClass: 'fa fa-eye',
                 altText:'abc'
             }
         },
@@ -87,6 +89,47 @@
                 else {
                     this.pwdType = 'password'
                     this.iconClass = 'fa fa-eye'
+                }
+            },
+
+            showConfirmPwd(){
+                if(this.confirmPwdType === 'password'){
+                    this.confirmPwdType = 'text'
+                    this.confirmIconClass = 'fa fa-eye-slash'
+
+                }
+                else {
+                    this.confirmPwdType = 'password'
+                    this.confirmIconClass = 'fa fa-eye'
+                }
+            },
+
+            signUp() {
+                let valid = this.validateData();
+                if (valid) {
+                    let data = {}
+                    data.name = this.userName;
+                    data.password = btoa(this.password)
+                    signUp(data).then(res => {
+                        if (res.data.success) {
+                            addUserName(this.userName)
+                            addUser(res.data.data)
+                            this.$router.push({name: 'home'});
+                        } else {
+                            showErrorDialog(this.$swal, res.data.errorMessage);
+                        }
+                    }).catch(err => {
+                        showErrorDialog(this.$swal, err.message);
+                    });
+                }
+            },
+
+            validateData(){
+                if(this.password === this.confirmPassword)
+                    return true;
+                else {
+                    showWarningDialog(this.$swal, "Password is not same as confirm password, please check")
+                    return false;
                 }
             }
         }

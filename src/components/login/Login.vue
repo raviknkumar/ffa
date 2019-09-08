@@ -27,8 +27,6 @@
                                 </el-input>
                             </div>
 
-                            <link rel="stylesheet"
-                                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
                             <div class="row d-flex justify-content-center form-control-custom">
                                 <div class="">
 <!--                                    <el-button style="background: #fd7e14" round class="btn-block z-depth-1 text-white" >-->
@@ -61,7 +59,10 @@
 
 <script>
     /* eslint-disable */
-    import {addUserName} from '../../commons/localStoreFunctions'
+    import {addUserName, addUser} from '../../commons/localStoreFunctions'
+    import {login} from "@/api/ffaEndPoints";
+    import {showErrorDialog} from "@/commons/commons";
+
     export default {
         name: "Login",
         data() {
@@ -87,10 +88,22 @@
             },
             handleLogin(){
                 // validate userName
+                let data = {}
+                data.name = this.userName
+                data.password = btoa(this.password);
 
-                addUserName(this.userName);
-                this.$router.push({ name: 'home'});
-
+                login(data).then(res=>{
+                    if(res.data.success){
+                        addUserName(this.userName);
+                        addUser(res.data.data);
+                        this.$router.push({ name: 'home'});
+                    }
+                    else{
+                        showErrorDialog(this.$swal, res.data.errorMessage);
+                    }
+                }).catch(err=>{
+                    showErrorDialog(this.$swal, err.message);
+                });
             }
         }
     }

@@ -1,7 +1,6 @@
 <template>
     <div>
         <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-
             <a v-if="drawer" @click="closeNav()" style="margin-left: 1vw;color: #000;font-size: large">
                 <i class="el-icon-s-fold"></i>
             </a>
@@ -12,9 +11,6 @@
             <span class="navbar-text has-text-weight-bold">
                 Field Force Automation
             </span>
-
-            <link rel="stylesheet"
-                  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
             <el-dropdown trigger="click" style="color: black">
 
@@ -41,12 +37,23 @@
                 </div>
             </div>
 
-            <router-link to="metrics" @click.native="closeNav()">
-                <i class="fa fa-chart-line"></i>&nbsp;Metrics
+            <router-link to="/metrics" @click.native="closeNav()">
+                <i class="el-icon-s-data"></i>&nbsp;Metrics
             </router-link>
-            <router-link to="store" @click.native="closeNav()">
-                <i class="el-icon-office-building"></i>&nbsp;Add New Shop
+            <router-link to="/store" @click.native="closeNav()">
+                <i class="el-icon-office-building"></i>&nbsp;Shop
             </router-link>
+            <router-link to="/brand" @click.native="closeNav()">
+                <i class="el-icon-document"></i>&nbsp;Brand
+            </router-link>
+            <router-link to="/item" @click.native="closeNav()">
+                <i class="el-icon-shopping-cart-2"></i>&nbsp;Item
+            </router-link>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            <router-link to="/beats" @click.native="closeNav()">
+            <i class="fa fa-file"></i>&nbsp;Beats
+            </router-link>
+
         </div>
 
     </div>
@@ -131,8 +138,8 @@
     }
 
     .router-link-active {
-        color: #fff;
-        background: #409eff;
+        background-color: #4CAF50;
+        color: #ffffff;
     }
 
     .sidebar li.active > a {

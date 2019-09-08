@@ -21,8 +21,11 @@ Vue.use(sweetAlert);
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 
+import store from './vuexStore'
+
 new Vue({
   router,
   render: h => h(App),
+  store
 }).$mount('#app')
 

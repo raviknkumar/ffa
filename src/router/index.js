@@ -14,7 +14,7 @@ export const routes = [
     {
         path: '/login',
         component: Login,
-        meta: {layout: 'no-navbar',icon:"fa fa-sign-in"}
+        meta: {layout: 'no-navbar'}
     },
     {
         path: '/',
@@ -22,7 +22,7 @@ export const routes = [
         name: 'Login',
         // eslint-disable-next-line no-unused-vars
         redirect: to => {
-            if(localStorage.username)
+            if (localStorage.username)
                 return '/home'
             else
                 return '/login'
@@ -30,13 +30,22 @@ export const routes = [
     },
     {
         path: '/home',
-        name:"home",
+        name: "home",
         component: Home,
     },
-    {path: '/signup', component: signUp},
+    {
+        path: '/signup',
+        component: signUp,
+        meta: {layout: 'no-navbar'}
+    },
+    {
+        path: '/brand',
+        name: "Brand",
+        component: () => import ("@/components/brand/index"),
+    },
     {
         path: '/404',
-        name:'NOT FOUND',
+        name: 'NOT FOUND',
         component: NotFound,
         meta: {layout: 'no-navbar'}
     },
@@ -46,13 +55,34 @@ export const routes = [
         component: () => import ("@/components/metrics/index"),
     },
     {
-        path: '/store',
+        path: '/vuexStore',
         name: ' Store Info',
         component: () => import ("@/components/store/index"),
     },
     {
+        path: '/item',
+        name: ' Item Info',
+        component: () => import ("@/components/item/index"),
+    },
+    {
+        path: '/beats',
+        name: ' Beats Info',
+        component: () => import ("@/components/beats/index"),
+        children:[
+
+        ]
+    },
+    {
+        path: '/beats/:shopId',
+        name: 'shopReport',
+        component: () => import('@/components/beats/billing'),
+        props: (route) => ({
+            shop:{...route.params}
+        })
+    },
+    {
         path: '*',
-        name:'not found',
+        name: 'not found',
         component: NotFound,
         meta: {layout: 'no-navbar'}
     },

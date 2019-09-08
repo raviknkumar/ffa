@@ -15,8 +15,7 @@
                     </div>
                     <div class="col-7 col-sm-5 col-md-5 col-xl-5 col-lg-5">
                         <el-select v-model="brandId" placeholder="select brand"
-                                   filterable v-loading="brandLoading"
-                                   @change="filterItems()">
+                                   filterable v-loading="brandLoading">
                             <el-option value="All">All</el-option>
                             <el-option v-for="brand in brands"
                                        :key="brand._id"
@@ -29,7 +28,14 @@
 
                 <b-table show-empty responsive small outlined sticky-header
                          :items="filteredItems" :fields="fields" head-variant="light"
-                         style="margin-bottom: 7vh;">
+                         style="margin-bottom: 7vh;"
+                         :busy="isBusy">
+
+                    <div slot="table-busy" class="text-center my-2">
+                        <b-spinner variant="primary" class="align-middle"></b-spinner>
+                        <strong style="color: #1482f0">Loading...</strong>
+                    </div>
+
 
                     <template slot="itemName" slot-scope="data">
                         <b-badge style="display:block;width:50vw;overflow-x: auto"
@@ -51,7 +57,7 @@
 
                 <div class="row poz">
                     <div class="col-7">
-                        <el-input type="text" v-model="itemFilter"
+                        <el-input type="text" v-model="itemFilterText"
                                   placeholder="Filter items..."/>
                     </div>
                     <div class="col-4">
@@ -88,15 +94,18 @@
 
             try {
                 let res = await this.getItems().catch(err => {
-                    showErrorDialog(this.$swal, err.messag)
+                    this.isBusy = false
+                    showErrorDialog(this.$swal, err.message)
                 });
                 this.processItems(res.data.data);
-                res = await this.fetchSaleOrder();
+                res = await this.fetchSaleOrder().catch(err => {
+                    this.isBusy = false
+                    showErrorDialog(this.$swal, err.message)
+                });
                 this.processSaleOrders(res);
-                console.log(" Add existing in created")
                 this.addExisitingSaleOrderDetails();
-                this.pageLoaded = true
             } catch (err) {
+                this.isBusy = false
                 showErrorDialog(this.$swal, err.message)
             }
             this.fetchData = false
@@ -108,10 +117,7 @@
 
         watch: {
             async $route(route) {
-                this.items = []; // clear data in table
-                this.filteredItems = [];
-                this.fetchData = true;
-
+                this.clearData();
                 if (route.name === 'shopReport' && this.fetchData === true) {
                     try {
                         let res = await this.getItems().catch(err => {
@@ -120,9 +126,7 @@
                         this.processItems(res.data.data);
                         res = await this.fetchSaleOrder();
                         this.processSaleOrders(res);
-                        console.log(" Add existing in route change")
                         this.addExisitingSaleOrderDetails();
-                        this.pageLoaded = true
                     } catch (err) {
                         showErrorDialog(this.$swal, err.message)
                     }
@@ -133,27 +137,38 @@
         data() {
             return {
                 brands: [],
-                brandId: null,
+                brandId: "All",
                 brandLoading: false,
-
-                filteredItems: [],
 
                 items: [],
                 fields: [],
-                itemFilter: null,
+                itemFilterText: "",
                 editedRows: new Set(),
 
                 saleOrder: {},
                 saleOrderDetails: [],
 
                 fetchData: true,
-                pageLoaded: false
+                isBusy: true,
 
             }
         },
         computed: {
             shop() {
                 return this.$store.getters.getShop;
+            },
+            filteredItems() {
+                if (this.brandId === 'All') {
+                    return this.items.filter(item => {
+                        return item.itemName != null && item.itemName.includes(this.itemFilterText);
+                    })
+                } else {
+                    return this.items.filter(item => {
+                        return item.itemName != null
+                            && item.itemName.includes(this.itemFilterText)
+                            && item.brandId === this.brandId
+                    })
+                }
             }
         },
         methods: {
@@ -171,11 +186,11 @@
                 })
             },
             async getItems() {
+                this.isBusy = true;
                 return getItems({});
             },
 
             processItems(resp) {
-                console.log("In process Items: ",this.items)
                 this.items = []
                 for (let i = 0; i < resp.length; i++) {
                     this.items.push({
@@ -188,22 +203,10 @@
                         'id': "",
                     })
                 }
-                this.filteredItems = this.items;
-                console.log("In process Items: ",this.items)
-            },
-
-            filterItems() {
-                if (this.brandId === 'All')
-                    this.filteredItems = this.items;
-
-                else {
-                    this.filteredItems = this.items.filter(item => {
-                        return item.brandId === this.brandId;
-                    })
-                }
             },
 
             createBill() {
+                console.log(this.editedRows);
                 this.showConfirmDialog();
             },
 
@@ -251,7 +254,6 @@
             },
 
             addExisitingSaleOrderDetails() {
-                console.table("Table Items entry: ", this.items);
                 const itemMap = new Map();
                 if (this.saleOrderDetails.length > 0) {
                     for (let i = 0; i < this.items.length; i++) {
@@ -265,32 +267,36 @@
                     }
                     this.items = [...itemMap.values()];
                 }
-                this.filteredItems = this.items;
-                console.table("Table Items exit: ", this.items);
+                this.isBusy = false
             },
 
             addSaleOrder() {
                 let data = {};
                 data.saleOrder = {};
-                let saleOrder = data.saleOrder;
-                saleOrder.shopName = this.shop.name
-                saleOrder.shopId = this.shop.id
-                saleOrder.orderDate = formatDateHiphen(new Date());
-                saleOrder.id = null
+                if (Object.keys(this.saleOrder).length === 0) {
+                    data.saleOrder.shopName = this.shop.name
+                    data.saleOrder.shopId = this.shop.id
+                    data.saleOrder.orderDate = formatDateHiphen(new Date());
+                    data.saleOrder.id = null
+                } else {
+                    data.saleOrder = {...this.saleOrder}
+                }
                 let updatedData = []
 
                 let changedRows = [...this.editedRows]
                 changedRows.forEach(rowIndex => {
-                    let obj = this.convertItemToSaleOrderDetail(this.items[rowIndex]);
+                    let obj = this.convertItemToSaleOrderDetail(data.saleOrder, this.items[rowIndex]);
                     updatedData.push({
                         ...obj
                     })
                 });
 
                 data.saleOrderDetails = updatedData;
+
                 createSaleOrder(data).then(res => {
                     if (res.data.success) {
                         showSuccessDialog(this.$swal, "Order created successfully")
+                        this.clearData();
                     } else {
                         showErrorDialog(this.$swal, res.data.errorMessage)
                     }
@@ -299,21 +305,40 @@
                 })
             },
 
-            convertItemToSaleOrderDetail(obj) {
+            convertItemToSaleOrderDetail(saleOrder, item) {
                 let tempData = {}
-                tempData.saleOrderId = obj.saleOrderId;
-                tempData.id = obj.id
-                tempData.itemId = obj.itemId;
-                tempData.itemName = obj.itemName;
-                tempData.pieces = obj.pieces;
-                tempData.boxes = obj.boxes;
+                tempData.saleOrderId = item.saleOrderId;
+                if (tempData.saleOrderId == null)
+                    tempData.saleOrderId = saleOrder.id;
+
+                tempData.id = item.id
+                tempData.itemId = item.itemId;
+                tempData.itemName = item.itemName;
+                tempData.pieces = item.pieces;
+                tempData.boxes = item.boxes;
                 return tempData;
             },
 
-            clearData(){
+            clearData() {
                 this.items = []
-                this.filteredItems = []
                 this.editedRows = new Set();
+                this.saleOrder = {}
+                this.saleOrderDetails = []
+                this.fetchData = true;
+            },
+            async fetchDataAsync() {
+                let res = await this.getItems().catch(err => {
+                    this.isBusy = false
+                    showErrorDialog(this.$swal, err.message)
+                });
+                this.processItems(res.data.data);
+                res = await this.fetchSaleOrder().catch(err => {
+                    this.isBusy = false
+                    showErrorDialog(this.$swal, err.message)
+                });
+                this.processSaleOrders(res);
+                this.addExisitingSaleOrderDetails()
+                this.isBusy = false
             }
         },
     }

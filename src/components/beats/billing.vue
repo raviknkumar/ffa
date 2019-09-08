@@ -1,5 +1,5 @@
 <template>
-    <div v-if="pageLoaded" v-loading="!pageLoaded">
+    <div>
         <div class="row d-flex justify-content-center">
             <h2><i class="el-icon-s-shop"></i></h2>
             <h4>
@@ -71,31 +71,74 @@
 </template>
 
 <script>
+    /* eslint-disable */
+
     import {createSaleOrder, fetchSaleOrder, getBrands, getItems} from "@/api/ffaEndPoints";
-    import {formatDateHiphen, showErrorDialog} from "@/commons/commons";
+    import {formatDateHiphen, showErrorDialog, showSuccessDialog} from "@/commons/commons";
 
     export default {
         name: "billing",
-        async mounted() {
+        async created() {
+
             this.fields.push({key: 'itemName', value: "Name"})
             this.fields.push({key: 'pieces', value: "Pieces"})
             this.fields.push({key: 'boxes', value: "Boxes"})
 
             this.getBrands();
-            await this.getItems();
-            this.fetchSaleOrder();
-            this.addExisitingSaleOrderDetails();
-            this.pageLoaded = true
+
+            try {
+                let res = await this.getItems().catch(err => {
+                    showErrorDialog(this.$swal, err.messag)
+                });
+                this.processItems(res.data.data);
+                res = await this.fetchSaleOrder();
+                this.processSaleOrders(res);
+                console.log(" Add existing in created")
+                this.addExisitingSaleOrderDetails();
+                this.pageLoaded = true
+            } catch (err) {
+                showErrorDialog(this.$swal, err.message)
+            }
+            this.fetchData = false
         },
+
+        async mounted() {
+
+        },
+
+        watch: {
+            async $route(route) {
+                this.items = []; // clear data in table
+                this.filteredItems = [];
+                this.fetchData = true;
+
+                if (route.name === 'shopReport' && this.fetchData === true) {
+                    try {
+                        let res = await this.getItems().catch(err => {
+                            showErrorDialog(this.$swal, err.messag)
+                        });
+                        this.processItems(res.data.data);
+                        res = await this.fetchSaleOrder();
+                        this.processSaleOrders(res);
+                        console.log(" Add existing in route change")
+                        this.addExisitingSaleOrderDetails();
+                        this.pageLoaded = true
+                    } catch (err) {
+                        showErrorDialog(this.$swal, err.message)
+                    }
+                }
+            }
+        },
+
         data() {
             return {
                 brands: [],
                 brandId: null,
                 brandLoading: false,
-                items: [],
+
                 filteredItems: [],
 
-                tableItems: [],
+                items: [],
                 fields: [],
                 itemFilter: null,
                 editedRows: new Set(),
@@ -103,6 +146,7 @@
                 saleOrder: {},
                 saleOrderDetails: [],
 
+                fetchData: true,
                 pageLoaded: false
 
             }
@@ -127,42 +171,39 @@
                 })
             },
             async getItems() {
-                getItems({}).then(res => {
-                    if (res.data.success) {
-                        let resp = res.data.data
-                        this.tableItems = []
-                        for (let i = 0; i < resp.length; i++) {
-                            this.tableItems.push({
-                                'saleOrderId': null,
-                                'pieces': '',
-                                'boxes': '',
-                                'itemName': resp[i].name,
-                                'brandId': resp[i].brandId,
-                                'itemId': resp[i].id,
-                                'id':"",
-                            })
-                        }
-                        // this.filteredItems = this.tableItems;
-                    } else
-                        showErrorDialog(this.$swal, res.data.errorMessage)
-                }).catch(err => {
-                    showErrorDialog(this.$swal, err.message);
-                })
+                return getItems({});
+            },
+
+            processItems(resp) {
+                console.log("In process Items: ",this.items)
+                this.items = []
+                for (let i = 0; i < resp.length; i++) {
+                    this.items.push({
+                        'saleOrderId': null,
+                        'pieces': '',
+                        'boxes': '',
+                        'itemName': resp[i].name,
+                        'brandId': resp[i].brandId,
+                        'itemId': resp[i].id,
+                        'id': "",
+                    })
+                }
+                this.filteredItems = this.items;
+                console.log("In process Items: ",this.items)
             },
 
             filterItems() {
                 if (this.brandId === 'All')
-                    this.filteredItems = this.tableItems;
+                    this.filteredItems = this.items;
 
                 else {
-                    this.filteredItems = this.tableItems.filter(item => {
+                    this.filteredItems = this.items.filter(item => {
                         return item.brandId === this.brandId;
                     })
                 }
             },
 
             createBill() {
-                // eslint-disable-next-line no-console
                 this.showConfirmDialog();
             },
 
@@ -192,51 +233,43 @@
 
             editRow(index) {
                 this.editedRows.add(index)
-                // eslint-disable-next-line no-console
-                console.log("row edited: " + index)
             },
 
-            fetchSaleOrder() {
+            async fetchSaleOrder() {
                 let params = {}
                 params.shopId = this.shop.id;
                 params.orderDate = formatDateHiphen(new Date())
 
-                fetchSaleOrder(params).then(res => {
-                    if (res.data.success && res.data.data != null) {
-                        this.saleOrder = res.data.data.saleOrder
-                        this.saleOrderDetails = res.data.data.saleOrderDetails
-                    }
-                })
-                console.log("SOD:", this.saleOrderDetails.length);
+                return fetchSaleOrder(params);
+            },
+
+            processSaleOrders(res) {
+                if (res.data.success && res.data.data != null) {
+                    this.saleOrder = res.data.data.saleOrder
+                    this.saleOrderDetails = res.data.data.saleOrderDetails
+                }
             },
 
             addExisitingSaleOrderDetails() {
+                console.table("Table Items entry: ", this.items);
                 const itemMap = new Map();
-                // eslint-disable-next-line no-console
-                console.log("ITEMS:", this.tableItems)
-                for(let i=0; i< this.tableItems.length;i++){
-                    let item = this.tableItems[i];
-                    itemMap.set(item.itemId, item)
+                if (this.saleOrderDetails.length > 0) {
+                    for (let i = 0; i < this.items.length; i++) {
+                        let item = this.items[i];
+                        itemMap.set(item.itemId, item)
+                    }
+
+                    for (let i = 0; i < this.saleOrderDetails.length; i++) {
+                        let saleOrderDetail = this.saleOrderDetails[i]
+                        itemMap.set(saleOrderDetail.itemId, saleOrderDetail);
+                    }
+                    this.items = [...itemMap.values()];
                 }
-
-                // eslint-disable-next-line no-console
-                console.log("MAP:",itemMap)
-                // eslint-disable-next-line no-console
-                console.log("SOD: ", this.saleOrderDetails);
-
-                for (let i = 0; i < this.saleOrderDetails.length; i++) {
-                    let saleOrderDetail = this.saleOrderDetails[i]
-                    itemMap.set(saleOrderDetail.itemId, saleOrderDetail);
-                }
-                this.tableItems = [...itemMap.values()];
-                this.filteredItems = this.tableItems;
-
-                // eslint-disable-next-line no-console
-                console.log(this.tableItems)
+                this.filteredItems = this.items;
+                console.table("Table Items exit: ", this.items);
             },
 
             addSaleOrder() {
-
                 let data = {};
                 data.saleOrder = {};
                 let saleOrder = data.saleOrder;
@@ -248,19 +281,15 @@
 
                 let changedRows = [...this.editedRows]
                 changedRows.forEach(rowIndex => {
-                    let obj = this.convertItemToSaleOrderDetail(this.tableItems[rowIndex]);
+                    let obj = this.convertItemToSaleOrderDetail(this.items[rowIndex]);
                     updatedData.push({
                         ...obj
                     })
                 });
 
                 data.saleOrderDetails = updatedData;
-                // eslint-disable-next-line no-console
-                console.log(data);
-
                 createSaleOrder(data).then(res => {
                     if (res.data.success) {
-                        // eslint-disable-next-line no-undef
                         showSuccessDialog(this.$swal, "Order created successfully")
                     } else {
                         showErrorDialog(this.$swal, res.data.errorMessage)
@@ -279,6 +308,12 @@
                 tempData.pieces = obj.pieces;
                 tempData.boxes = obj.boxes;
                 return tempData;
+            },
+
+            clearData(){
+                this.items = []
+                this.filteredItems = []
+                this.editedRows = new Set();
             }
         },
     }

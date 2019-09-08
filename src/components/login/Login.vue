@@ -19,17 +19,13 @@
 
                             <div class="form-control-custom">
                                 <label class="grey-text" for="password">Password </label>
-                                <el-input id="password" :type="pwdType" v-model="password" placeholder="password"
+                                <el-input id="password" show-password v-model="password" placeholder="password"
                                           @keyup.enter.native="handleLogin()">
-                                        <el-button slot="append" type="primary" class="show-pwd" @click.native="showPwd()" style="background: none">
-                                            <i :class="iconClass" aria-hidden="false" ></i>
-                                        </el-button>
                                 </el-input>
                             </div>
 
                             <div class="row d-flex justify-content-center form-control-custom">
                                 <div class="">
-<!--                                    <el-button style="background: #fd7e14" round class="btn-block z-depth-1 text-white" >-->
                                     <el-button style="background: #fd7e14" round @click.native="handleLogin" >
                                         <strong class="text-white">Sign in &nbsp; <i class="fa fa-sign-in" aria-hidden="false"></i></strong>
                                     </el-button>

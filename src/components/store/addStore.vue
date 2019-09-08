@@ -4,19 +4,19 @@
             <h5>ADD A SHOP</h5>
         </div>
 
-        <div class="row">
-            <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3">
+        <div class="row form-group required">
+            <label class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3 control-label">
                 Shop Name
-            </div>
+            </label>
             <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
                 <el-input v-model="shopName" placeholder="enter shopname"></el-input>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3">
+        <div class="row form-group required">
+            <label class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3 control-label">
                 Street Located
-            </div>
+            </label>
             <div class="col-7 col-sm-5 col-md-5 col-xl-5 col-lg-5">
                 <el-select v-model="street" placeholder="select street" filterable>
                     <el-option value="G M Palya">G M Palya</el-option>
@@ -54,9 +54,6 @@
         </div>
 
         <div class="row">
-            <!--            <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3">-->
-            <!--                Street Located-->
-            <!--            </div>-->
             <div class="col-9 col-sm-5 col-md-5 col-xl-5 col-lg-5">
                 <el-select v-model="type2" placeholder="select type2" filterable>
                     <el-option value="Executive Basic">Executive Basic</el-option>
@@ -69,10 +66,10 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3">
+        <div class="row form-group required">
+            <label class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3 control-label">
                 Address Line 1
-            </div>
+            </label>
             <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
                 <el-input type="text" v-model="addressLine1" placeholder="Address Line 1"></el-input>
             </div>
@@ -87,25 +84,25 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3">
+        <div class="row form-group required">
+            <label class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3 control-label">
                 Phone Number
-            </div>
+            </label>
             <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
                 <el-input type="tel" v-model="phoneNumber" placeholder="Phone number"></el-input>
             </div>
         </div>
 
         <div class="row d-flex justify-content-center justify-content-lg-center justify-content-md-center">
-            <div class="col-5 col-sm-3 col-md-2 col-xl-2 col-lg-2">
-                <el-button type="primary">Capture Location</el-button>
-            </div>
+<!--            <div class="col-5 col-sm-3 col-md-2 col-xl-2 col-lg-2">-->
+<!--                <el-button type="primary">Capture Location</el-button>-->
+<!--            </div>-->
             <div class="col-4 offset-2 col-sm-3 col-md-2 col-xl-2 col-lg-2">
                 <el-button type="primary" @click="addShop()">Save</el-button>
             </div>
-            <div class="col-3 col-sm-3 col-md-2 col-xl-2 col-lg-2">
-                <el-button type="primary">Save And Order</el-button>
-            </div>
+<!--            <div class="col-3 col-sm-3 col-md-2 col-xl-2 col-lg-2">-->
+<!--                <el-button type="primary">Save And Order</el-button>-->
+<!--            </div>-->
         </div>
 
     </div>
@@ -116,24 +113,28 @@
     /* eslint-disable */
 
     import {addShop} from "@/api/ffaEndPoints";
-    import {showErrorDialog, showSuccessDialog} from "@/commons/commons";
+    import {showErrorDialog, showSuccessDialog, showWarningDialog} from "@/commons/commons";
 
     export default {
         name: "addStore",
         data() {
             return {
-                shop: null,
+                shopName: null,
                 street: null,
                 addressLine1: null,
                 addressLine2: null,
                 phoneNumber: null,
                 type1: 'GOI',
-                type2: 'Executive Basic'
+                type2: 'Executive Basic',
+                errorMessage:null,
             }
         },
         methods: {
 
             addShop() {
+                if(this.validateShop() === false)
+                    return;
+
                 let data = this.buildDataForAddShopRequest();
                 addShop(data).then(res => {
                     if (res.data.success) {
@@ -147,9 +148,28 @@
                 })
             },
 
+            validateShop(){
+                let errorMessage = null
+                if(this.shopName == null )
+                    errorMessage = "please enter shopName";
+                else if(this.street == null)
+                    errorMessage = "please enter street";
+                else if(this.addressLine1 == null)
+                    errorMessage = "please enter Address Line 1";
+                else if (this.phoneNumber == null)
+                    errorMessage = "please enter phone Number";
+                if(errorMessage == null){
+                    return true;
+                }
+                else {
+                    showWarningDialog(this.$swal, errorMessage);
+                    return false;
+                }
+            },
+
             buildDataForAddShopRequest() {
                 let data = {};
-                data.name = this.shop;
+                data.name = this.shopName;
                 data.street = this.street;
                 data.addressLine1 = this.addressLine1;
                 data.addressLine2 = this.addressLine2;
@@ -174,5 +194,9 @@
 </script>
 
 <style scoped>
-
+    .form-group.required .control-label:after {
+        content:"*";
+        color:red;
+        font-size: 20px;
+    }
 </style>

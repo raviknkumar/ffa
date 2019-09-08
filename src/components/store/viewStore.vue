@@ -1,10 +1,35 @@
 <template>
     <div style="margin-left: 5px; margin-right: 5px">
+
+        <div class="row">
+            <div class="col-8 col-sm-2 col-md-2 col-xl-2 col-lg-2">
+                Street Located
+            </div>
+            <div class="col-7 col-sm-4 col-md-4 col-xl-5 col-lg-5">
+                <el-select v-model="street" placeholder="select street" filterable>
+                    <el-option value="All">All</el-option>
+                    <el-option value="G M Palya">G M Palya</el-option>
+                    <el-option value="Jogupalya G Street">Jogupalya G Street</el-option>
+                    <el-option value="Thippasandra">ThippaSandra</el-option>
+                    <el-option value="Annasandrapalya">Anna sandra Palya</el-option>
+                    <el-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</el-option>
+                    <el-option value="Kaggadasapura">Kaggadasapura</el-option>
+                </el-select>
+            </div>
+
+            <div class="col-9 col-sm-4 col-md-4 col-xl-4 col-lg-4">
+                <el-input prefix-icon="fa fa-search" placeholder="Filter by shop Name" v-model="shopNameFilterText">
+                </el-input>
+            </div>
+        </div>
+
+
         <b-container fluid>
             <b-table show-empty responsive small outlined hover striped
-                     :items="items" :fields="fields" :current-page="currentPage"
+                     :items="filteredItems" :fields="fields" :current-page="currentPage"
                      :per-page="perPage" :filter="filter">
             </b-table>
+
             <b-pagination
                     v-model="currentPage"
                     :total-rows="totalRows"
@@ -20,11 +45,11 @@
 
     export default {
         name: "viewStore",
-        props:['tableData'],
+        props: ['tableData'],
 
         mounted() {
             this.$watch('tableData', response => {
-                this.showData(response);
+                    this.showData(response);
                 },
                 {immediate: true})
             this.fields.push({key: 'name', label: 'Shop name'});
@@ -37,15 +62,31 @@
         },
         data() {
             return {
+                street: "All",
                 items: [],
                 fields: [],
                 currentPage: 1, perPage: 10,
                 pageOptions: [5, 10, 15], sortBy: null, sortDesc: false, sortDirection: 'asc', filter: null,
                 index: null,
-                totalRows: 0
+                totalRows: 0,
+
+                shopNameFilterText:""
             }
-        }
-        ,
+        },
+        computed: {
+            filteredItems() {
+                if (this.street === "All")
+                    return this.items.filter(shop =>{
+                        return shop.name!=null && shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
+                    });
+                else {
+                    return this.items.filter(shop => {
+                        return shop.street === this.street &&
+                            shop.name!=null && shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase());
+                    })
+                }
+            }
+        },
         methods: {
             showData(res) {
                 this.items = [];

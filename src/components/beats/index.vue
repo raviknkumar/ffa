@@ -18,6 +18,11 @@
             </div>
         </div>
 
+        <div v-if="shopLoading" class="text-center my-2">
+            <b-spinner variant="primary" class="align-middle"></b-spinner>
+            <strong style="color: #1482f0">Loading...</strong>
+        </div>
+
         <div class="row d-flex justify-content-center">
             <b-button pill class="col-10 col-sm-3 col-md-3 col-xl-3 col-lg-3"
                       v-for="shop in filteredShops"
@@ -43,6 +48,7 @@
                 shops: [],
                 filteredShops: [],
                 street: null,
+                shopLoading:false,
             }
         },
         methods: {
@@ -63,14 +69,17 @@
 
         },
         created() {
+            this.shopLoading = true;
             getShops({}).then(res => {
                 if (res.data.success) {
                     this.shops = res.data.data
                     this.filteredShops = res.data.data
                 } else
                     showErrorDialog(this.$swal, res.data.errorMessage);
+                this.shopLoading = false;
             }).catch(err => {
                 showErrorDialog(this.$swal, err.message);
+                this.shopLoading = false;
             })
         }
     }

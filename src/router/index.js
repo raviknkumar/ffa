@@ -55,7 +55,7 @@ export const routes = [
         component: () => import ("@/components/metrics/index"),
     },
     {
-        path: '/vuexStore',
+        path: '/store',
         name: ' Store Info',
         component: () => import ("@/components/store/index"),
     },

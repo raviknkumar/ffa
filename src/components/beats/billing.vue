@@ -64,6 +64,9 @@
                         <el-button type="success" @click.native="createBill()"
                                    style="background-color: #fb8c00;border-color: #fb8c00">Next
                         </el-button>
+                        <el-button type="success" @click.native="previewBill()"
+                                   style="background-color: #fb8c00;border-color: #fb8c00">Preview
+                        </el-button>
                     </div>
                 </div>
 
@@ -92,22 +95,7 @@
 
             this.getBrands();
 
-            try {
-                let res = await this.getItems().catch(err => {
-                    this.isBusy = false
-                    showErrorDialog(this.$swal, err.message)
-                });
-                this.processItems(res.data.data);
-                res = await this.fetchSaleOrder().catch(err => {
-                    this.isBusy = false
-                    showErrorDialog(this.$swal, err.message)
-                });
-                this.processSaleOrders(res);
-                this.addExisitingSaleOrderDetails();
-            } catch (err) {
-                this.isBusy = false
-                showErrorDialog(this.$swal, err.message)
-            }
+            this.fetchDataAsync();
             this.fetchData = false
         },
 
@@ -119,17 +107,7 @@
             async $route(route) {
                 this.clearData();
                 if (route.name === 'shopReport' && this.fetchData === true) {
-                    try {
-                        let res = await this.getItems().catch(err => {
-                            showErrorDialog(this.$swal, err.messag)
-                        });
-                        this.processItems(res.data.data);
-                        res = await this.fetchSaleOrder();
-                        this.processSaleOrders(res);
-                        this.addExisitingSaleOrderDetails();
-                    } catch (err) {
-                        showErrorDialog(this.$swal, err.message)
-                    }
+                    this.fetchDataAsync();
                 }
             }
         },
@@ -206,7 +184,6 @@
             },
 
             createBill() {
-                console.log(this.editedRows);
                 this.showConfirmDialog();
             },
 
@@ -297,6 +274,7 @@
                     if (res.data.success) {
                         showSuccessDialog(this.$swal, "Order created successfully")
                         this.clearData();
+                        this.fetchDataAsync();
                     } else {
                         showErrorDialog(this.$swal, res.data.errorMessage)
                     }

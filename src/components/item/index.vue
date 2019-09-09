@@ -63,15 +63,20 @@
                     </div>
 
                     <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                        <el-select v-model="brandFilterId" placeholder="Enter Brand"
-                                   filterable v-loading="brandLoading">
-                            <el-option value="All">All</el-option>
-                            <el-option v-for="(brand) in brands"
+                        <a-select v-model="brandFilterId"
+                                  showSearch
+                                  placeholder="Select a Brand"
+                                  optionFilterProp="children"
+                                  style="width: 200px"
+                                  :filterOption="filterOption"
+                                   v-loading="brandLoading">
+                            <a-select-option value="All">All</a-select-option>
+                            <a-select-option v-for="(brand) in brands"
                                        :value="brand.id"
                                        :key="brand._id"
-                                       :label="brand.name">
-                            </el-option>
-                        </el-select>
+                                       >{{brand.name}}
+                            </a-select-option>
+                        </a-select>
                     </div>
                 </div>
 

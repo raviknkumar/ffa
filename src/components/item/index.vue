@@ -19,14 +19,6 @@
                         Brand
                     </div>
                     <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-<!--                        <el-select v-model="brandIndex" placeholder="Enter Brand"-->
-<!--                                   filterable v-loading="brandLoading">-->
-<!--                            <el-option v-for="(brand, index) in brands"-->
-<!--                                       :value="index"-->
-<!--                                       :key="brand._id"-->
-<!--                                       :label="brand.name">-->
-<!--                            </el-option>-->
-<!--                        </el-select>-->
                         <a-select
                                 showSearch
                                 placeholder="Select a Brand"

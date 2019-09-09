@@ -23,8 +23,13 @@
                             Brand Name
                         </div>
                         <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                            <el-input prefix-icon="fa fa-search" type="text" v-model="filterbrandText" clearable placeholder="Enter brandname.. to filter">
-                            </el-input>
+                            <a-input-search
+                                    placeholder="Enter brandname.. to filter"
+                                    style="width: 300px"
+                                    v-model="filterbrandText"
+                            />
+<!--                            <el-input prefix-icon="fa fa-search" type="text" v-model="filterbrandText" clearable placeholder="Enter brandname.. to filter">-->
+<!--                            </el-input>-->
                         </div>
                     </div>
 

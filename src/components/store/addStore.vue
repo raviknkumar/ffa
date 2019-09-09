@@ -18,51 +18,62 @@
                 Street Located
             </label>
             <div class="col-7 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                <el-select v-model="street" placeholder="select street" filterable>
-                    <el-option value="G M Palya">G M Palya</el-option>
-                    <el-option value="Jogupalya G Street">Jogupalya G Street</el-option>
-                    <el-option value="Thippasandra">ThippaSandra</el-option>
-                    <el-option value="Annasandrapalya">Anna sandra Palya</el-option>
-                    <el-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</el-option>
-                    <el-option value="Kaggadasapura">Kaggadasapura</el-option>
-                </el-select>
+                <a-select
+                        showSearch
+                        placeholder="Select a Street"
+                        optionFilterProp="children"
+                        style="width: 200px"
+                        :filterOption="filterOption"
+                        notFoundContent="No Street Found"
+                v-model="street">
+                    <a-select-option value="G M Palya">G M Palya</a-select-option>
+                    <a-select-option value="Jogupalya G Street">Jogupalya G Street</a-select-option>
+                    <a-select-option value="Thippasandra">ThippaSandra</a-select-option>
+                    <a-select-option value="Annasandrapalya">Anna sandra Palya</a-select-option>
+                    <a-select-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</a-select-option>
+                    <a-select-option value="Kaggadasapura">Kaggadasapura</a-select-option>
+                </a-select>
             </div>
         </div>
 
         <div class="row">
 
             <div class="col-9 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                <el-select v-model="type1" placeholder="select type" filterable>
-                    <el-option value="GOI">GOI</el-option>
-                    <el-option value="GSS">GSS</el-option>
-                    <el-option value="GOT">GOT</el-option>
-                    <el-option value="GFW">GFW</el-option>
-                    <el-option value="GGS">GGS</el-option>
-                    <el-option value="GMS">GMS</el-option>
-                    <el-option value="GGK">GGK</el-option>
-                    <el-option value="GFS">GFS</el-option>
-                    <el-option value="GPETYS">GPETTYS</el-option>
-                    <el-option value="GPS">GPS</el-option>
-                    <el-option value="SELF SERVICE">SELF SERVICE</el-option>
-                    <el-option value="GDC">GCDC</el-option>
-                    <el-option value="GFO">GFO</el-option>
-                    <el-option value="GCC">GCC</el-option>
-                    <el-option value="GLB">GLB</el-option>
-                    <el-option value="GTRS">GTRS</el-option>
-                </el-select>
+                <a-select v-model="type1" placeholder="select type" showSearch optionFilterProp="children"
+                          style="width: 200px" :filterOption="filterOption"
+                          notFoundContent="No type Found">
+                    <a-select-option value="GOI">GOI</a-select-option>
+                    <a-select-option value="GSS">GSS</a-select-option>
+                    <a-select-option value="GOT">GOT</a-select-option>
+                    <a-select-option value="GFW">GFW</a-select-option>
+                    <a-select-option value="GGS">GGS</a-select-option>
+                    <a-select-option value="GMS">GMS</a-select-option>
+                    <a-select-option value="GGK">GGK</a-select-option>
+                    <a-select-option value="GFS">GFS</a-select-option>
+                    <a-select-option value="GPETYS">GPETTYS</a-select-option>
+                    <a-select-option value="GPS">GPS</a-select-option>
+                    <a-select-option value="SELF SERVICE">SELF SERVICE</a-select-option>
+                    <a-select-option value="GDC">GCDC</a-select-option>
+                    <a-select-option value="GFO">GFO</a-select-option>
+                    <a-select-option value="GCC">GCC</a-select-option>
+                    <a-select-option value="GLB">GLB</a-select-option>
+                    <a-select-option value="GTRS">GTRS</a-select-option>
+                </a-select>
             </div>
         </div>
 
         <div class="row">
             <div class="col-9 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                <el-select v-model="type2" placeholder="select type2" filterable>
-                    <el-option value="Executive Basic">Executive Basic</el-option>
-                    <el-option value="Executive">Executive</el-option>
-                    <el-option value="Signature">Signature</el-option>
-                    <el-option value="Premium">Premium</el-option>
-                    <el-option value="Vintage">Vintage</el-option>
-                    <el-option value="FirstBusiness">First Business</el-option>
-                </el-select>
+                <a-select v-model="type2" placeholder="select type2" showSearch optionFilterProp="children"
+                          style="width: 200px" :filterOption="filterOption"
+                          notFoundContent="No type Found">
+                    <a-select-option value="Executive Basic">Executive Basic</a-select-option>
+                    <a-select-option value="Executive">Executive</a-select-option>
+                    <a-select-option value="Signature">Signature</a-select-option>
+                    <a-select-option value="Premium">Premium</a-select-option>
+                    <a-select-option value="Vintage">Vintage</a-select-option>
+                    <a-select-option value="FirstBusiness">First Business</a-select-option>
+                </a-select>
             </div>
         </div>
 
@@ -188,7 +199,11 @@
                 this.phoneNumber = null;
                 this.type1 = 'GOI';
                 this.type2 = 'Executive Basic'
-            }
+            },
+
+            filterOption(input, option) {
+                return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            },
         }
     }
 </script>

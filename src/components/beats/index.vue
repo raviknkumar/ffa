@@ -48,13 +48,13 @@
                 shops: [],
                 filteredShops: [],
                 street: null,
-                shopLoading:false,
+                shopLoading: false,
             }
         },
         methods: {
             createBill(shop) {
                 store.commit('storeShop', shop);
-                this.$router.push('/beats/'+shop.id);
+                this.$router.push('/beats/' + shop.id);
             },
 
             filterShops() {

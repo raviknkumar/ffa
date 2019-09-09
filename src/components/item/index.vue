@@ -19,14 +19,26 @@
                         Brand
                     </div>
                     <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                        <el-select v-model="brandIndex" placeholder="Enter Brand"
-                                   filterable v-loading="brandLoading">
-                            <el-option v-for="(brand, index) in brands"
-                                       :value="index"
-                                       :key="brand._id"
-                                       :label="brand.name">
-                            </el-option>
-                        </el-select>
+<!--                        <el-select v-model="brandIndex" placeholder="Enter Brand"-->
+<!--                                   filterable v-loading="brandLoading">-->
+<!--                            <el-option v-for="(brand, index) in brands"-->
+<!--                                       :value="index"-->
+<!--                                       :key="brand._id"-->
+<!--                                       :label="brand.name">-->
+<!--                            </el-option>-->
+<!--                        </el-select>-->
+                        <a-select
+                                showSearch
+                                placeholder="Select a Brand"
+                                optionFilterProp="children"
+                                style="width: 200px"
+                                :filterOption="filterOption">
+                            <a-select-option v-for="(brand,index) in brands" :value="index"
+                                             :key="brand._id"
+                                             :label="brand.name">
+                                {{brand.name}}
+                            </a-select-option>
+                        </a-select>
                     </div>
                 </div>
 
@@ -120,6 +132,23 @@
                 index: null,
                 totalRows: 0,
                 activeTab: "0",
+
+                array: [
+                    'Alabama', 'Alaska', 'American Samoa', 'Arizona',
+                    'Arkansas', 'California', 'Colorado', 'Connecticut',
+                    'Delaware', 'District of Columbia', 'Federated States of Micronesia',
+                    'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho',
+                    'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+                    'Louisiana', 'Maine', 'Marshall Islands', 'Maryland',
+                    'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
+                    'Missouri', 'Montana', 'Nebraska', 'Nevada',
+                    'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
+                    'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio',
+                    'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico',
+                    'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee',
+                    'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia',
+                    'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
+                ],
 
                 isBusy:false,
             }
@@ -235,6 +264,10 @@
                 this.itemName = "";
                 this.brandIndex = null
                 this.itemPrice = null
+            },
+
+            filterOption(input, option) {
+                return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
         }
     }

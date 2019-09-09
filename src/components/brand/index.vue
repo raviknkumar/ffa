@@ -27,6 +27,7 @@
                                     placeholder="Enter brandname.. to filter"
                                     style="width: 300px"
                                     v-model="filterbrandText"
+                                    @search="filterBrands"
                             />
 <!--                            <el-input prefix-icon="fa fa-search" type="text" v-model="filterbrandText" clearable placeholder="Enter brandname.. to filter">-->
 <!--                            </el-input>-->
@@ -137,6 +138,9 @@
 
             clearData() {
                 this.brandName = null;
+            },
+            filterBrands(){
+                return this.filteredItems;
             }
         }
     }

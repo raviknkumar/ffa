@@ -13,7 +13,7 @@
 
         <div class="row">
             <div class="col-7 col-sm-4 col-md-4 col-xl-4 col-lg-4">
-            <el-input prefix-icon="fa fa-search" v-model="shopNameFilterText"
+            <el-input prefix-icon="fa fa-search" v-model="shopNameFilterText" @input="filteredItems"
             placeholder="filter by shop name"></el-input>
             </div>
 

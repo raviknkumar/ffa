@@ -81,6 +81,14 @@ export const routes = [
         })
     },
     {
+        path: '/order',
+        name: 'Customer Order',
+        component: () => import('@/components/saleOrder/index'),
+        props: (route) => ({
+            shop:{...route.params}
+        })
+    },
+    {
         path: '*',
         name: 'not found',
         component: NotFound,

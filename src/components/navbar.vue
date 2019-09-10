@@ -39,9 +39,6 @@
                 </div>
             </div>
 
-            <router-link to="/metrics" @click.native="closeNav()">
-                <i class="el-icon-s-data"></i>&nbsp;Metrics
-            </router-link>
             <router-link to="/store" @click.native="closeNav()">
                 <i class="el-icon-office-building"></i>&nbsp;Shop
             </router-link>
@@ -54,7 +51,13 @@
             <link rel="stylesheet"
                   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <router-link to="/beats" @click.native="closeNav()">
-                <i class="fa fa-file"></i>&nbsp;Beats
+                <a-icon type="file-text"/>&nbsp;<span style="margin-top:5px"> Beats </span>
+            </router-link>
+            <router-link to="/order" @click.native="closeNav()">
+                <i class="fa fa-file-pdf-o" ></i>&nbsp;Orders
+            </router-link>
+            <router-link to="/metrics" @click.native="closeNav()">
+                <i class="el-icon-s-data"></i>&nbsp;Metrics
             </router-link>
 
         </div>

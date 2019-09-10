@@ -1,5 +1,6 @@
 import { ffaRequest } from './request'
 import {getUserId} from "@/commons/localStoreFunctions";
+import axios from "axios"
 
 /* eslint-disable */
 
@@ -97,5 +98,29 @@ export function editSaleOrder(data) {
         method: 'post',
         data,
         headers
+    })
+}
+
+export function fetchOrders(params) {
+    return ffaRequest({
+        url:'/so/date',
+        method: 'get',
+        params
+    })
+}
+
+export function generateFile(params) {
+    return ffaRequest({
+        url:'/so/generate',
+        method: 'get',
+        params
+    })
+}
+
+export function getBlobData(url, params){
+    return axios.get(url , {
+        responseType : 'arraybuffer',
+        headers,
+        params
     })
 }

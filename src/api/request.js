@@ -1,7 +1,7 @@
 import {ipConfig} from './ipConfig'
 import axios from 'axios'
 
-const ffaProdUrl = () => {
+export const ffaProdUrl = () => {
     return ipConfig.ip.ffa.prod;
 }
 

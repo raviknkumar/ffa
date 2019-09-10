@@ -13,8 +13,8 @@
 
         <div class="row">
             <div class="col-7 col-sm-4 col-md-4 col-xl-4 col-lg-4">
-            <el-input prefix-icon="fa fa-search" v-model="shopNameFilterText" @input="filteredItems"
-            placeholder="filter by shop name"></el-input>
+                <el-input prefix-icon="fa fa-search" v-model="shopNameFilterText" @input="filteredItems"
+                          placeholder="filter by shop name"></el-input>
             </div>
 
             <div class="col-5 col-sm-4 col-md-4 col-xl-5 col-lg-5">
@@ -31,10 +31,9 @@
         </div>
 
         <div>
-            <b-container fluid>
-                <b-table show-empty responsive small outlined hover striped
-                         :items="filteredItems" :fields="fields" :current-page="currentPage"
-                         :per-page="perPage" :filter="filter" :isBusy="isBusy">
+            <b-table show-empty responsive small outlined hover striped
+                     :items="filteredItems" :fields="fields" :current-page="currentPage"
+                     :per-page="perPage" :filter="filter" :busy="isBusy">
 
                 <div slot="table-busy" class="text-center my-2">
                     <b-spinner variant="primary" class="align-middle"></b-spinner>
@@ -42,31 +41,55 @@
                 </div>
 
                 <template slot-scope="row" slot="actions">
-                    <el-button type="primary" @click="generateExcel(row.item)" circle title="generate Excel">
-                        <a-icon type="file-excel" style="font-size: 18px" />
-                        </el-button>
-                    <el-button type="success" @click="generatePdf(row.item)" title="generate PDF" circle>
-                        <a-icon type="file-pdf" style="font-size: 18px" />
-                    </el-button>
-                    <el-button type="warning" @click="downloadExcel(row.item)" round title="download Excel">
-                        <a-icon type="cloud-download" style="font-size: 18px" />
-                        <a-icon type="file-excel" style="font-size: 18px" />
-                    </el-button>
-                    <el-button type="danger" @click="downloadPdf(row.item)" round title="download Pdf">
-                        <a-icon type="cloud-download" style="font-size: 18px" />
-                        <a-icon type="file-pdf" style="font-size: 18px" />
+                    <el-button title="Download Sheets" type="success" size="mini" class="mr-1"
+                               @click.stop="openDownloadModal(row.item , $event.target)">
+                        Generate & Download
                     </el-button>
                 </template>
 
-                </b-table>
-                <b-pagination
-                        v-model="currentPage"
-                        :total-rows="totalRows"
-                        :per-page="perPage"
-                        aria-controls="my-table"
-                ></b-pagination>
-            </b-container>
+            </b-table>
+
+            <b-pagination
+                    v-model="currentPage"
+                    :total-rows="totalRows"
+                    :per-page="perPage"
+                    aria-controls="my-table"
+            ></b-pagination>
+
+            <el-dialog :visible.sync="dialog" title="Sheets" width="80%">
+                <div class="justify-content-center">
+                    <el-button
+                            type="primary" @click="generateExcel(downloadActions.content)" circle
+                            title="generate Excel">
+                        <a-icon type="file-excel" style="font-size: 18px"/>
+                    </el-button>
+                    <el-button
+                            type="success" @click="generatePdf(downloadActions.content)" title="generate PDF"
+                            circle>
+                        <a-icon type="file-pdf" style="font-size: 18px"/>
+                    </el-button>
+                </div>
+                <br><br>
+                <el-button
+                        type="warning" @click="downloadExcel(downloadActions.content)" round
+                        title="download Excel">
+                    <a-icon type="cloud-download" style="font-size: 18px"/>
+                    <a-icon type="file-excel" style="font-size: 18px"/>
+                </el-button>
+                <el-button
+                        type="danger" @click="downloadPdf(downloadActions.content)" round title="download Pdf">
+                    <a-icon type="cloud-download" style="font-size: 18px"/>
+                    <a-icon type="file-pdf" style="font-size: 18px"/>
+                </el-button>
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialog = false">Cancel</el-button>
+                </span>
+
+            </el-dialog>
+
         </div>
+
     </div>
 </template>
 
@@ -75,12 +98,13 @@
     import {formatDateHiphen, showErrorDialog, showSuccessDialog, showWarningDialog} from "@/commons/commons";
     import {fetchOrders, generateFile, getBlobData} from "@/api/ffaEndPoints";
     import {ffaProdUrl} from "@/api/request";
+
     export default {
         name: "index",
-        data(){
-            return{
-                date:null,
-                shopNameFilterText:"",
+        data() {
+            return {
+                date: null,
+                shopNameFilterText: "",
                 items: [],
                 fields: [],
                 currentPage: 1, perPage: 10,
@@ -89,30 +113,31 @@
                 totalRows: 0,
                 isBusy: false,
                 street: "All",
+                dialog: false,
+                downloadActions: {title: '', content: ''},
             }
         },
 
-        computed:{
-          filteredItems(){
-              if(this.street === "All") {
-                  return this.items.filter(item => {
-                      return item != null && item.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
-                  })
-              }
-              else {
-                  return this.items.filter(item => {
-                      return item != null
-                          && item.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
-                          && item.street === this.street;
-                  })
-              }
-          }
+        computed: {
+            filteredItems() {
+                if (this.street === "All") {
+                    return this.items.filter(item => {
+                        return item != null && item.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
+                    })
+                } else {
+                    return this.items.filter(item => {
+                        return item != null
+                            && item.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
+                            && item.street === this.street;
+                    })
+                }
+            },
         },
 
-        mounted(){
-          this.fields.push({id:"name",key:"name"})
-          this.fields.push({id:"street",key:"street"})
-          this.fields.push("actions");
+        mounted() {
+            this.fields.push({id: "name", key: "name"})
+            this.fields.push({id: "street", key: "street"})
+            this.fields.push("actions");
         },
 
         methods: {
@@ -144,6 +169,7 @@
                             'id': res[i].id,
                             'name': res[i].name,
                             'street': res[i].street,
+                            'key': i,
                         });
                     }
                     this.totalRows = this.items.length
@@ -153,6 +179,7 @@
             validateData() {
                 if (this.date == null) {
                     showWarningDialog(this.$swal, "please select a date");
+                    this.isBusy = false;
                     return false;
                 }
                 return true;
@@ -206,7 +233,7 @@
                         const url = window.URL.createObjectURL(new Blob([response.data]))
                         const link = document.createElement('a')
                         link.href = url
-                        link.setAttribute('download', params.shopName+"_"+params.orderDate+".xlsx")
+                        link.setAttribute('download', params.shopName + "_" + params.orderDate + ".xlsx")
                         document.body.appendChild(link)
                         link.click()
                     } else
@@ -230,7 +257,7 @@
                         const url = window.URL.createObjectURL(new Blob([response.data]))
                         const link = document.createElement('a')
                         link.href = url
-                        link.setAttribute('download', params.shopName+"_"+params.orderDate+".pdf")
+                        link.setAttribute('download', params.shopName + "_" + params.orderDate + ".pdf")
                         document.body.appendChild(link)
                         link.click()
                     } else
@@ -238,7 +265,18 @@
                 }).catch(err => {
                     showErrorDialog(this.$swal, err.message);
                 });
-            }
+            },
+
+            openDownloadModal(item, button) {
+                this.dialog = true;
+                this.downloadActions.content = item
+            },
+
+            resetDownloadModel() {
+                this.dialog = false,
+                    this.downloadActions.title = ''
+                this.downloadActions.content = ''
+            },
         }
     }
 </script>

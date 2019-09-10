@@ -57,6 +57,9 @@
             ></b-pagination>
 
             <el-dialog :visible.sync="dialog" title="Sheets" width="80%">
+                <div class="row justify-content-center">
+                    Generate
+                </div>
                 <div class="justify-content-center">
                     <el-button
                             type="primary" @click="generateExcel(downloadActions.content)" circle
@@ -70,6 +73,9 @@
                     </el-button>
                 </div>
                 <br><br>
+                <div class="row justify-content-center">
+                    Download
+                </div>
                 <el-button
                         type="warning" @click="downloadExcel(downloadActions.content)" round
                         title="download Excel">

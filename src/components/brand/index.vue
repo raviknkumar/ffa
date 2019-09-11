@@ -24,13 +24,12 @@
                         </div>
                         <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
                             <a-input-search
+                                    enterButton
                                     placeholder="Enter brandname.. to filter"
                                     style="width: 300px"
                                     v-model="filterbrandText"
                                     @search="filterBrands"
                             />
-<!--                            <el-input prefix-icon="fa fa-search" type="text" v-model="filterbrandText" clearable placeholder="Enter brandname.. to filter">-->
-<!--                            </el-input>-->
                         </div>
                     </div>
 
@@ -82,13 +81,13 @@
         computed: {
             filteredItems() {
                 return this.items.filter(brand => {
-                    return brand.name!=null && brand.name.toLowerCase().includes(this.filterbrandText.toLowerCase())
+                    return brand.name != null && brand.name.toLowerCase().includes(this.filterbrandText.toLowerCase())
                 });
             }
         },
         methods: {
             addBrand() {
-                if(this.validateData() === false)
+                if (this.validateData() === false)
                     return;
                 let data = {}
                 data.name = this.brandName;
@@ -104,9 +103,9 @@
                 })
             },
 
-            validateData(){
+            validateData() {
 
-                if(this.brandName == null){
+                if (this.brandName == null) {
                     showWarningDialog(this.$swal, "please enter brand name")
                     return false;
                 }
@@ -139,7 +138,7 @@
             clearData() {
                 this.brandName = null;
             },
-            filterBrands(){
+            filterBrands() {
                 return this.filteredItems;
             }
         }

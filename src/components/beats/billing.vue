@@ -14,15 +14,20 @@
                         Brand:
                     </div>
                     <div class="col-7 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                        <el-select v-model="brandId" placeholder="select brand"
-                                   filterable v-loading="brandLoading">
-                            <el-option value="All">All</el-option>
-                            <el-option v-for="brand in brands"
-                                       :key="brand._id"
-                                       :label="brand.name"
-                                       :value="brand.id">
-                            </el-option>
-                        </el-select>
+                        <a-select
+                                showSearch
+                                placeholder="Select a Brand"
+                                optionFilterProp="children"
+                                style="width: 200px"
+                                :filterOption="filterOption" v-loading="brandLoading"
+                                v-model="brandId">
+                            <a-select-option value="All">All</a-select-option>
+                            <a-select-option v-for="(brand) in brands" :value="brand.id"
+                                             :key="brand._id"
+                                             :label="brand.name">
+                                {{brand.name}}
+                            </a-select-option>
+                        </a-select>
                     </div>
                 </div>
 
@@ -35,7 +40,6 @@
                         <b-spinner variant="primary" class="align-middle"></b-spinner>
                         <strong style="color: #1482f0">Loading...</strong>
                     </div>
-
 
                     <template slot="itemName" slot-scope="data">
                         <b-badge style="display:block;width:50vw;overflow-x: auto"
@@ -319,9 +323,13 @@
                 this.isBusy = false
             },
 
-            filterItems(){
+            filterItems() {
                 return this.filteredItems
-            }
+            },
+
+            filterOption(input, option) {
+                return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            },
         },
     }
 </script>

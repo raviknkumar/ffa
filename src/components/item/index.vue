@@ -55,28 +55,30 @@
             <el-tab-pane label="View" name="1" id="tab-1">
 
                 <div class="row">
-                    <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                        <el-input v-model="itemNameFilterText" placeholder="Search by Item Name"
-                                   prefix-icon="fa fa-search"
-                                   filterable v-loading="brandLoading">
-                        </el-input>
-                    </div>
-
-                    <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
+                    <div class="col-12 col-sm-6 col-md-6 col-xl-6 col-lg-6">
                         <a-select v-model="brandFilterId"
                                   showSearch
                                   placeholder="Select a Brand"
                                   optionFilterProp="children"
                                   style="width: 200px"
                                   :filterOption="filterOption"
-                                   v-loading="brandLoading">
+                                  v-loading="brandLoading">
                             <a-select-option value="All">All</a-select-option>
                             <a-select-option v-for="(brand) in brands"
-                                       :value="brand.id"
-                                       :key="brand._id"
-                                       >{{brand.name}}
+                                             :value="brand.id"
+                                             :key="brand._id"
+                            >{{brand.name}}
                             </a-select-option>
                         </a-select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-6 col-xl-6 col-lg-6">
+                        <a-input-search
+                                placeholder="Enter brandname.. to filter"
+                                style="width: 300px"
+                                v-model="itemNameFilterText"
+                                @search="filterItems"
+                                enterButton
+                        />
                     </div>
                 </div>
 
@@ -120,7 +122,7 @@
                 brandLoading: false,
 
                 itemNameFilterText: "",
-                brandFilterId:"All",
+                brandFilterId: "All",
 
                 items: [],
                 fields: [],
@@ -147,19 +149,19 @@
                     'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
                 ],
 
-                isBusy:false,
+                isBusy: false,
             }
         },
-        computed:{
-            filteredItems(){
-                if(this.brandFilterId === 'All')
-                    return this.items.filter(item=>{
-                        return item.name!= null && item.name.toLowerCase().includes(this.itemNameFilterText.toLowerCase())
+        computed: {
+            filteredItems() {
+                if (this.brandFilterId === 'All')
+                    return this.items.filter(item => {
+                        return item.name != null && item.name.toLowerCase().includes(this.itemNameFilterText.toLowerCase())
                     })
                 else {
-                    return this.items.filter(item=>{
+                    return this.items.filter(item => {
                         return item.brandId === this.brandFilterId &&
-                            item.name!= null && item.name.toLowerCase().includes(this.itemNameFilterText.toLowerCase())
+                            item.name != null && item.name.toLowerCase().includes(this.itemNameFilterText.toLowerCase())
                     })
                 }
             }
@@ -176,7 +178,7 @@
         },
         methods: {
             addItem() {
-                if(this.validateData() === false)
+                if (this.validateData() === false)
                     return;
 
                 let data = {}
@@ -191,29 +193,27 @@
                         this.getItems();
                         this.clearData();
                         this.activeTab = "1";
-                    }
-                    else
+                    } else
                         showErrorDialog(this.$swal, res.data.errorMessage);
                 }).catch(err => {
                     showErrorDialog(this.$swal, err.message);
                 })
             },
 
-            validateData(){
+            validateData() {
                 let errorMessage = "";
-                if(this.itemName === null){
+                if (this.itemName === null) {
                     errorMessage = "please enter itemName"
-                }
-                else if(this.brandIndex == null)
+                } else if (this.brandIndex == null)
                     errorMessage = "please enter brand name"
-                if(errorMessage !== "") {
+                if (errorMessage !== "") {
                     showWarningDialog(this.$swal, errorMessage)
                     return false
                 }
                 return true;
             },
 
-            getBrands(){
+            getBrands() {
                 this.brandLoading = true;
                 getBrands().then(res => {
                     if (res.data.success)
@@ -227,7 +227,7 @@
                 })
             },
 
-            getItems(){
+            getItems() {
                 this.isBusy = true;
                 getItems().then(res => {
                     if (res.data.success)
@@ -249,7 +249,7 @@
                             'id': res[i].id,
                             'name': res[i].name,
                             'brandName': res[i].brandName,
-                            'brandId':res[i].brandId,
+                            'brandId': res[i].brandId,
                             'price': res[i].price,
                             'inventory': res[i].inventory
                         });
@@ -257,7 +257,7 @@
                     this.totalRows = this.items.length
                 }
             },
-            clearData(){
+            clearData() {
                 this.itemName = "";
                 this.brandIndex = null
                 this.itemPrice = null
@@ -265,6 +265,10 @@
 
             filterOption(input, option) {
                 return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            },
+
+            filterItems() {
+                return this.filteredItems;
             }
         }
     }

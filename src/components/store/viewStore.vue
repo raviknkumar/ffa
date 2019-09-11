@@ -5,21 +5,33 @@
             <div class="col-8 col-sm-2 col-md-2 col-xl-2 col-lg-2">
                 Street Located
             </div>
-            <div class="col-7 col-sm-4 col-md-4 col-xl-5 col-lg-5">
-                <el-select v-model="street" placeholder="select street" filterable>
-                    <el-option value="All">All</el-option>
-                    <el-option value="G M Palya">G M Palya</el-option>
-                    <el-option value="Jogupalya G Street">Jogupalya G Street</el-option>
-                    <el-option value="Thippasandra">ThippaSandra</el-option>
-                    <el-option value="Annasandrapalya">Anna sandra Palya</el-option>
-                    <el-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</el-option>
-                    <el-option value="Kaggadasapura">Kaggadasapura</el-option>
-                </el-select>
+
+            <div class="col-7 col-sm-5 col-md-5 col-xl-5 col-lg-5">
+                <a-select
+                        showSearch
+                        placeholder="Select a Street"
+                        optionFilterProp="children"
+                        style="width: 200px"
+                        :filterOption="filterOption"
+                        notFoundContent="No Street Found"
+                        v-model="street">
+                    <a-select-option value="G M Palya">G M Palya</a-select-option>
+                    <a-select-option value="Jogupalya G Street">Jogupalya G Street</a-select-option>
+                    <a-select-option value="Thippasandra">ThippaSandra</a-select-option>
+                    <a-select-option value="Annasandrapalya">Anna sandra Palya</a-select-option>
+                    <a-select-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</a-select-option>
+                    <a-select-option value="Kaggadasapura">Kaggadasapura</a-select-option>
+                </a-select>
             </div>
 
             <div class="col-9 col-sm-4 col-md-4 col-xl-4 col-lg-4">
-                <el-input prefix-icon="fa fa-search" placeholder="Filter by shop Name" v-model="shopNameFilterText">
-                </el-input>
+                <a-input-search
+                        placeholder="Filter by shop Name"
+                        style="width: 300px"
+                        v-model="shopNameFilterText"
+                        @search="filterBrands"
+                        enterButton
+                />
             </div>
         </div>
 
@@ -70,19 +82,19 @@
                 index: null,
                 totalRows: 0,
 
-                shopNameFilterText:""
+                shopNameFilterText: ""
             }
         },
         computed: {
             filteredItems() {
                 if (this.street === "All")
-                    return this.items.filter(shop =>{
-                        return shop.name!=null && shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
+                    return this.items.filter(shop => {
+                        return shop.name != null && shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
                     });
                 else {
                     return this.items.filter(shop => {
                         return shop.street === this.street &&
-                            shop.name!=null && shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase());
+                            shop.name != null && shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase());
                     })
                 }
             }
@@ -105,6 +117,14 @@
                     this.totalRows = this.items.length
                 }
             },
+
+            filterOption(input, option) {
+                return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            },
+
+            filterBrands() {
+                return this.filteredItems;
+            }
         }
     }
 </script>

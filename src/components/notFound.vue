@@ -1,21 +1,4 @@
 <template>
-    <!--    <div class="wscn-http404-container">-->
-    <!--        <div class="wscn-http404">-->
-    <!--            <div class="pic-404">-->
-    <!--                <img class="pic-404__parent" src="../../src/assets/404.png" alt="404">-->
-    <!--                <img class="pic-404__child left" src="../../src/assets/404_cloud.png" alt="404">-->
-    <!--                <img class="pic-404__child mid" src="../../src/assets/404_cloud.png" alt="404">-->
-    <!--                <img class="pic-404__child right" src="../../src/assets/404_cloud.png" alt="404">-->
-    <!--            </div>-->
-    <!--            <div class="bullshit">-->
-    <!--                <div class="bullshit__oops">OOPS!</div>-->
-    <!--                <div class="bullshit__headline">{{ message }}</div>-->
-    <!--                <div class="bullshit__info">The page you are looking for does not exist.</div>-->
-    <!--                <router-link to="/home" class="bullshit__return-home">Home</router-link>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </div>-->
-
     <div class="code-box-demo">
         <div class="ant-result ant-result-404">
             <div class="ant-result-icon ant-result-image">

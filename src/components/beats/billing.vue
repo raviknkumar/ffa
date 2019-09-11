@@ -57,15 +57,15 @@
 
                 <div class="row poz">
                     <div class="col-7">
-                        <el-input type="text" v-model="itemFilterText"
-                                  placeholder="Filter items..."/>
+                        <a-input-search
+                                placeholder="Filter items..."
+                                @search="filterItems"
+                                enterButton v-model="itemFilterText"
+                        />
                     </div>
                     <div class="col-4">
                         <el-button type="success" @click.native="createBill()"
                                    style="background-color: #fb8c00;border-color: #fb8c00">Next
-                        </el-button>
-                        <el-button type="success" @click.native="previewBill()"
-                                   style="background-color: #fb8c00;border-color: #fb8c00">Preview
                         </el-button>
                     </div>
                 </div>
@@ -317,6 +317,10 @@
                 this.processSaleOrders(res);
                 this.addExisitingSaleOrderDetails()
                 this.isBusy = false
+            },
+
+            filterItems(){
+                return this.filteredItems
             }
         },
     }

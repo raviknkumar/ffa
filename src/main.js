@@ -18,14 +18,13 @@ Vue.use(bootStrapVue);
 Vue.use(sweetAlert);
 
 import 'ant-design-vue/dist/antd.css'
-import {Select, Input, Icon, Table } from 'ant-design-vue';
+import {Select, Input, Icon } from 'ant-design-vue';
 
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 Vue.use(Select)
 Vue.use(Input)
 Vue.use(Icon)
-Vue.use(Table)
 
 import store from './vuexStore'
 

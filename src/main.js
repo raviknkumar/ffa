@@ -27,6 +27,7 @@ Vue.use(Input)
 Vue.use(Icon)
 
 import store from './vuexStore'
+import './permission'
 
 new Vue({
   router,

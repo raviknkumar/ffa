@@ -19,12 +19,12 @@
                         Brand
                     </div>
                     <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                        <a-select
-                                showSearch
-                                placeholder="Select a Brand"
-                                optionFilterProp="children"
-                                style="width: 200px"
-                                :filterOption="filterOption">
+                        <a-select v-model="brandIndex"
+                                  showSearch
+                                  placeholder="Select a Brand"
+                                  optionFilterProp="children"
+                                  style="width: 200px"
+                                  :filterOption="filterOption">
                             <a-select-option v-for="(brand,index) in brands" :value="index"
                                              :key="brand._id"
                                              :label="brand.name">
@@ -36,10 +36,35 @@
 
                 <div class="row">
                     <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3">
-                        Price
+                        Box Price
                     </div>
-                    <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                        <el-input type="number" v-model="itemPrice" placeholder="enter Item Price"></el-input>
+                    <div class="col-8 col-sm-4 col-md-3 col-xl-3 col-lg-3">
+                        <el-input ype="number" min="0" v-model="boxPrice" placeholder="enter Item Box Price">
+                            <template slot="append"><i class="fa fa-rupee" aria-hidden="false"></i></template>
+                        </el-input>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3">
+                        Piece Price
+                    </div>
+                    <div class="col-8 col-sm-4 col-md-3 col-xl-3 col-lg-3">
+                        <el-input ype="number" min="0" v-model="piecePrice" placeholder="enter Item Piece Price">
+                            <template slot="append"><i class="fa fa-rupee" aria-hidden="false"></i></template>
+                        </el-input>
+                    </div>
+                </div>
+
+                <div class="row form-group required">
+                    <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3 control-label">
+                        Tax (%)
+                    </div>
+                    <div class="col-8 col-sm-4 col-md-3 col-xl-3 col-lg-3">
+                        <el-input ype="number" min="0" max="100"
+                                  v-model="taxPercent" placeholder="enter Item Tax In percent">
+                            <template slot="append"><i class="fa fa-percent" aria-hidden="false"></i></template>
+                        </el-input>
                     </div>
                 </div>
 
@@ -118,7 +143,9 @@
                 itemName: null,
                 brandIndex: null,
                 brandId: null,
-                itemPrice: null,
+                boxPrice: null,
+                piecePrice: null,
+                taxPercent: null,
                 brandLoading: false,
 
                 itemNameFilterText: "",
@@ -131,23 +158,6 @@
                 index: null,
                 totalRows: 0,
                 activeTab: "0",
-
-                array: [
-                    'Alabama', 'Alaska', 'American Samoa', 'Arizona',
-                    'Arkansas', 'California', 'Colorado', 'Connecticut',
-                    'Delaware', 'District of Columbia', 'Federated States of Micronesia',
-                    'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho',
-                    'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-                    'Louisiana', 'Maine', 'Marshall Islands', 'Maryland',
-                    'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
-                    'Missouri', 'Montana', 'Nebraska', 'Nevada',
-                    'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
-                    'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio',
-                    'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico',
-                    'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee',
-                    'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia',
-                    'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
-                ],
 
                 isBusy: false,
             }
@@ -171,8 +181,11 @@
 
             this.fields.push({key: 'name', label: 'Item Name'});
             this.fields.push({key: 'brandName', label: 'Brand Name'});
-            this.fields.push({key: 'price', label: 'Item Price'});
+            this.fields.push({key: 'boxPrice', label: 'Box Price'});
+            this.fields.push({key: 'piecePrice', label: 'Piece Price'});
+            this.fields.push({key: 'taxPercent', label: 'Tax Percent '});
             this.fields.push({key: 'inventory', label: 'Item Stock'});
+
 
             this.getItems();
         },
@@ -186,7 +199,10 @@
                 let brand = this.brands[this.brandIndex]
                 data.brandId = brand.id
                 data.brandName = brand.name
-                data.price = this.itemPrice
+                data.boxPrice = this.boxPrice
+                data.piecePrice = this.piecePrice
+                data.taxPercent = this.taxPercent;
+
                 addItem(data).then(res => {
                     if (res.data.success) {
                         showSuccessDialog(this.$swal, "Item Added Successfully");
@@ -206,6 +222,13 @@
                     errorMessage = "please enter itemName"
                 } else if (this.brandIndex == null)
                     errorMessage = "please enter brand name"
+                else if (this.taxPercent == null)
+                    errorMessage = "please enter tax percent"
+                else if (this.taxPercent < 0)
+                    errorMessage = "Tax percent cannot be negative";
+                else if (this.taxPercent > 100)
+                    errorMessage = "Tax percent cannot be greater than 100";
+
                 if (errorMessage !== "") {
                     showWarningDialog(this.$swal, errorMessage)
                     return false
@@ -250,8 +273,10 @@
                             'name': res[i].name,
                             'brandName': res[i].brandName,
                             'brandId': res[i].brandId,
-                            'price': res[i].price,
-                            'inventory': res[i].inventory
+                            'boxPrice': res[i].boxPrice,
+                            'piecePrice': res[i].piecePrice,
+                            'taxPercent': res[i].taxPercent,
+                            'inventory': res[i].inventory,
                         });
                     }
                     this.totalRows = this.items.length

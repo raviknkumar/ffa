@@ -14,6 +14,7 @@ export const routes = [
     {
         path: '/login',
         component: Login,
+        name:"Login",
         meta: {layout: 'no-navbar'}
     },
     {
@@ -36,6 +37,7 @@ export const routes = [
     {
         path: '/signup',
         component: signUp,
+        name:"SignUp",
         meta: {layout: 'no-navbar'}
     },
     {

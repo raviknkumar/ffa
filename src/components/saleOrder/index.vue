@@ -198,6 +198,7 @@
                 params.shopName = row.name
                 params.type = "excel";
 
+                this.resetDownloadModel();
                 generateFile(params).then(res => {
                     if (res.data != null) {
                         showSuccessDialog(this.$swal, "File generated successfully..")
@@ -214,6 +215,8 @@
                 params.shopId = row.id;
                 params.shopName = row.name
                 params.type = "pdf";
+
+                this.resetDownloadModel();
 
                 generateFile(params).then(res => {
                     if (res.data != null) {
@@ -233,6 +236,8 @@
                 params.type = "excel";
 
                 let source = ffaProdUrl() + '/so/download';
+                this.resetDownloadModel();
+
 
                 getBlobData(source, params).then(response => {
                     if (response.data != null) {
@@ -255,6 +260,7 @@
                 params.shopId = row.id;
                 params.shopName = row.name
                 params.type = "pdf";
+                this.resetDownloadModel();
 
                 let source = ffaProdUrl() + '/so/download';
 

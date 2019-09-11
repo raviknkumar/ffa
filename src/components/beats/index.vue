@@ -69,17 +69,25 @@
 
         },
         created() {
-            this.shopLoading = true;
+            // this.shopLoading = true;
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
             getShops({}).then(res => {
                 if (res.data.success) {
                     this.shops = res.data.data
                     this.filteredShops = res.data.data
                 } else
                     showErrorDialog(this.$swal, res.data.errorMessage);
-                this.shopLoading = false;
+                // this.shopLoading = false;
+                loading.close()
             }).catch(err => {
                 showErrorDialog(this.$swal, err.message);
-                this.shopLoading = false;
+                // this.shopLoading = false;
+                loading.close()
             })
         }
     }

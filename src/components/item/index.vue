@@ -109,7 +109,7 @@
 
 
                 <b-container fluid>
-                    <b-table show-empty responsive small outlined hover striped
+                    <b-table show-empty responsive small  hover striped bordered
                              :items="filteredItems" :fields="fields" :current-page="currentPage"
                              :per-page="perPage" :filter="filter" :busy="isBusy">
 

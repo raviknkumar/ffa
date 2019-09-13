@@ -59,6 +59,9 @@
             <router-link to="/metrics" @click.native="closeNav()">
                 <i class="el-icon-s-data"></i>&nbsp;Metrics
             </router-link>
+            <router-link to="/home" @click.native="closeNav()">
+                <i class="fa fa-home"></i>&nbsp;Home
+            </router-link>
 
         </div>
 

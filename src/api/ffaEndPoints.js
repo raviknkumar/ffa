@@ -101,6 +101,15 @@ export function editSaleOrder(data) {
     })
 }
 
+export function uploadPrice(data) {
+    return ffaRequest({
+        url:'/so/price',
+        method: 'post',
+        data,
+        headers
+    })
+}
+
 export function fetchOrders(params) {
     return ffaRequest({
         url:'/so/date',

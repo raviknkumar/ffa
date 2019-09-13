@@ -198,11 +198,12 @@
                     showCancelButton: true,
                     confirmButtonText: 'Yes',
                     cancelButtonText: 'No',
-                    showCloseButton: true
+                    showCloseButton: true,
+                    position: 'top',
                 }).then((result) => {
                     if (!result.value) {
                         this.$swal({
-                            position: 'center',
+                            position: 'top',
                             type: 'warning',
                             title: 'Cancelled',
                             text: 'Bill not created!',
@@ -328,7 +329,7 @@
             },
 
             filterOption(input, option) {
-                return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                return option.componentOptions.children[0].text.toLowerCase().includes(input.toLowerCase()) >= 0
             },
         },
     }

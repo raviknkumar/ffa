@@ -73,7 +73,7 @@
             const loading = this.$loading({
                 lock: true,
                 text: 'Loading',
-                spinner: 'el-icon-loading',
+                spinner: 'fa fa-spinner fa-spin fa-3x',
                 background: 'rgba(0, 0, 0, 0.7)'
             });
             getShops({}).then(res => {

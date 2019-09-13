@@ -146,7 +146,7 @@
                     </a-select>
                 </div>
 
-                <div>
+                <div v-if="this.pricing.tableVisible">
                     <b-table show-empty responsive small outlined caption-top bordered
                              :items="pricingFilteredItems" :fields="pricingFields"
                              :current-page="pricing.currentPage"
@@ -546,16 +546,27 @@
                 data.saleOrder = this.pricing.saleOrder
                 data.saleOrderDetails = this.pricing.items;
 
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'fa fa-spinner fa-spin fa-3x',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+
                 uploadPrice(data).then(res => {
                     if (res.data.success) {
-                        showSuccessDialog(this.$swal, "Price uploaded successfully");
                         this.pricing.tableVisible = false;
                         this.pricing.saleOrder = {}
                         this.pricing.saleOrderDetails = [];
                         this.pricing.items = []
-                    } else
+                        loading.close();
+                        showSuccessDialog(this.$swal, "Price uploaded successfully");
+                    } else {
+                        loading.close();
                         showErrorDialog(this.$swal, res.data.erroMessage)
+                    }
                 }).catch(err => {
+                    loading.close();
                     showErrorDialog(this.$swal, err.message)
                 });
             },

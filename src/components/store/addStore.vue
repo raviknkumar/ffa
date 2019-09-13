@@ -124,7 +124,7 @@
     /* eslint-disable */
 
     import {addShop} from "@/api/ffaEndPoints";
-    import {showErrorDialog, showSuccessDialog, showWarningDialog} from "@/commons/commons";
+    import {processLoading, showErrorDialog, showSuccessDialog, showWarningDialog} from "@/commons/commons";
 
     export default {
         name: "addStore",
@@ -147,14 +147,22 @@
                     return;
 
                 let data = this.buildDataForAddShopRequest();
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'fa fa-spinner fa-spin fa-3x',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+
                 addShop(data).then(res => {
                     if (res.data.success) {
+                        loading.close();
                         showSuccessDialog(this.$swal, "Shop added successfully");
                         this.clearData();
                         this.$emit('addData', null);
-
                     }
                 }).catch(err => {
+                    loading.close();
                     showErrorDialog(this.$swal, err.message)
                 })
             },

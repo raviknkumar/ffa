@@ -89,16 +89,26 @@
             addBrand() {
                 if (this.validateData() === false)
                     return;
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'fa fa-spinner fa-spin fa-3x',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
                 let data = {}
                 data.name = this.brandName;
                 addBrand(data).then(res => {
                     if (res.data.success) {
                         this.clearData();
+                        loading.close();
                         showSuccessDialog(this.$swal, "Brand Added Successfully");
                         this.getBrands();
-                    } else
+                    } else {
+                        loading.close();
                         showErrorDialog(this.$swal, res.data.errorMessage)
+                    }
                 }).catch(err => {
+                    loading.close();
                     showErrorDialog(this.$swal, err.message);
                 })
             },

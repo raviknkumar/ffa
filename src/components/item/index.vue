@@ -195,6 +195,7 @@
                     return;
 
                 let data = {}
+
                 data.name = this.itemName
                 let brand = this.brands[this.brandIndex]
                 data.brandId = brand.id
@@ -203,15 +204,26 @@
                 data.piecePrice = this.piecePrice
                 data.taxPercent = this.taxPercent;
 
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'fa fa-spinner fa-spin fa-3x',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+
                 addItem(data).then(res => {
                     if (res.data.success) {
+                        loading.close();
                         showSuccessDialog(this.$swal, "Item Added Successfully");
                         this.getItems();
                         this.clearData();
                         this.activeTab = "1";
-                    } else
+                    } else{
+                        loading.close();
                         showErrorDialog(this.$swal, res.data.errorMessage);
+                    }
                 }).catch(err => {
+                    loading.close();
                     showErrorDialog(this.$swal, err.message);
                 })
             },

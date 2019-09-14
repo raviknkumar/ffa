@@ -1,32 +1,31 @@
 <template>
     <div>
         <div class="row" style="margin: 5px">
-            <a-input-group compact>
-                <a-select
-                        showSearch
-                        placeholder="Street Filter"
-                        optionFilterProp="children"
-                        style="width: 40%;height: 40px"
-                        notFoundContent="No Street Found"
-                        @change="handleChange"
-                        :filterOption="filterOption">
-                    <a-select-option value="All">All</a-select-option>
-                    <a-select-option value="G M Palya">G M Palya</a-select-option>
-                    <a-select-option value="Jogupalya G Street">Jogupalya G Street</a-select-option>
-                    <a-select-option value="Thippasandra">ThippaSandra</a-select-option>
-                    <a-select-option value="Annasandrapalya">Anna sandra Palya</a-select-option>
-                    <a-select-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</a-select-option>
-                    <a-select-option value="Kaggadasapura">Kaggadasapura</a-select-option>
-                </a-select>
-                <a-input-search
-                        enterButton
-                        placeholder="Filter by ShopName"
-                        style="width: 60%"
-                        v-model="shopNameFilterText"
-                        @input="filterShops"
-                        @search="filterShops"
-                />
-            </a-input-group>
+            <a-select
+                    showSearch
+                    placeholder="Street Filter"
+                    optionFilterProp="children"
+                    style="width: 55%;height: 40px"
+                    notFoundContent="No Street Found"
+                    defaultValue="All"
+                    @change="handleChange"
+                    :filterOption="filterOption">
+                <a-select-option value="All">All</a-select-option>
+                <a-select-option value="G M Palya">G M Palya</a-select-option>
+                <a-select-option value="Jogupalya G Street">Jogupalya G Street</a-select-option>
+                <a-select-option value="Thippasandra">ThippaSandra</a-select-option>
+                <a-select-option value="Annasandrapalya">Anna sandra Palya</a-select-option>
+                <a-select-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</a-select-option>
+                <a-select-option value="Kaggadasapura">Kaggadasapura</a-select-option>
+            </a-select>
+            <div class="formGroup">
+                <input type="text" placeholder="Filter by Shop Name" class="expandInput"
+                       v-model="shopNameFilterText"
+                       @input="filterShops"/>
+                <b-button class="buttonPushLeft" @click="filterShops" variant="primary">
+                    <i class="fa fa-search" aria-hidden="false"></i>
+                </b-button>
+            </div>
         </div>
 
         <div v-if="shopLoading" class="text-center my-2">
@@ -87,7 +86,10 @@
             handleChange(value) {
                 this.street = value;
                 this.filterShops();
-            }
+            },
+            filterOption(input, option) {
+                return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            },
 
         },
         created() {
@@ -114,27 +116,32 @@
 
 <style scoped>
 
-</style>
+    .formGroup {
+        display: flex;
+        flex-direction: row;
+        position: absolute;
+        right: 0;
+        width: 20%;
+        -webkit-transition: width 0.4s;
+        transition: width 2s;
+    }
 
-<!--<div class="col-5 col-sm-5 col-md-3 col-xl-3 col-lg-3">-->
-<!--    <el-select v-model="street" placeholder="select street"-->
-<!--               filterable @change="filterShops()">-->
-<!--        <el-option value="all">All</el-option>-->
-<!--        <el-option value="G M Palya">G M Palya</el-option>-->
-<!--        <el-option value="Jogupalya G Street">Jogupalya G Street</el-option>-->
-<!--        <el-option value="Thippasandra">ThippaSandra</el-option>-->
-<!--        <el-option value="Annasandrapalya">Anna sandra Palya</el-option>-->
-<!--        <el-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</el-option>-->
-<!--        <el-option value="Kaggadasapura">Kaggadasapura</el-option>-->
-<!--    </el-select>-->
-<!--</div>-->
-<!--<div class="col-7 col-sm-5 col-md-5 col-xl-5 col-lg-5">-->
-<!--    <a-input-search-->
-<!--            enterButton-->
-<!--            placeholder="Filter by ShopName"-->
-<!--            style="width: inherit"-->
-<!--            v-model="shopNameFilterText"-->
-<!--            @input="filterShops"-->
-<!--            @search="filterShops"-->
-<!--    />-->
-<!--</div>-->
+    .formGroup .expandInput {
+        width: 100%;
+        border-top: 2px solid #ccc;
+        border-bottom: 2px solid #ccc;
+        border-left: 2px solid #ccc;
+        border-radius: 4px 0 0 4px;
+        font-size: 16px;
+        background-color: white;
+    }
+
+    .formGroup:focus-within {
+        width: 90%;
+    }
+
+    .buttonPushLeft {
+        margin-left: -1px;
+    }
+
+</style>

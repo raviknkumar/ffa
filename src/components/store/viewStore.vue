@@ -37,10 +37,65 @@
 
 
         <b-container fluid>
-            <b-table show-empty responsive small hover striped bordered
-                     :items="filteredItems" :fields="fields" :current-page="currentPage"
-                     :per-page="perPage" :filter="filter">
+            <b-table show-empty responsive small hover outlined class="text-center" head-variant="light"
+                     :items="items" :fields="fields" :current-page="currentPage"
+                     :per-page="perPage"
+                     :filter="shopNameFilterText" filterIncludedFields="name" :filter-function="customFilter" @filtered="onFiltered"
+                     selectable select-mode="single" @row-clicked="showAdditionalDetails" sort-icon-left>
+
+                <template slot="name" slot-scope="data">
+                    <div style="display:block;width:30vw;overflow-x: auto" class="badge"><h6>{{ data.value }}</h6></div>
+                </template>
+
+                <template slot="row-details" slot-scope="row">
+
+                    <b-row class="text-left">
+                        <div class="col-12 col-sm-12 col-md-3 col-lg-3 col-xs-2" style="padding: 5px;margin-left: 5px">
+                            <b-badge class="text-center " style="font-size: 15px; font-weight: bold;" variant="primary">
+                                ShopType1:
+                            </b-badge>
+                            &nbsp;
+                            <b-badge class="text-center " style="font-size: 15px; font-weight: bold;" variant="success">
+                                {{row.item.type1}}
+                            </b-badge>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xs-3" style="padding: 5px;margin-left: 5px">
+                            <b-badge class="text-center " style="font-size: 15px; font-weight: bold;" variant="primary">
+                                ShopType2:
+                            </b-badge>
+                            &nbsp;
+                            <b-badge class="text-center " style="font-size: 15px; font-weight: bold;" variant="dark">
+                                {{row.item.type2}}
+                            </b-badge>
+                        </div>
+                        <div class="col-12 col-sm-10 col-md-5 col-lg-5 col-xs-5" style="padding: 5px;margin-left: 5px">
+                            <b-badge class="text-center " style="font-size: 15px; font-weight: bold;" variant="primary">
+                                Address Line 2:
+                            </b-badge>
+                            &nbsp;
+                            <b-badge class="text-center " style="font-size: 15px; font-weight: bold;" variant="info">
+                                {{row.item.addressLine2 }}
+                            </b-badge>
+                        </div>
+                    </b-row>
+
+                </template>
+
+                <template slot="actions" slot-scope="row">
+
+                    <b-button size="sm" @click="row.toggleDetails" class="mr-2" variant="primary">
+                         <span title="show info" v-if="row.detailsShowing === false">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                         </span>
+                        <span title="hide info" v-else>
+                            <i class="fa fa-minus" aria-hidden="true"></i>
+                        </span>
+                    </b-button>
+
+                </template>
+
             </b-table>
+
 
             <b-pagination
                     v-model="currentPage"
@@ -63,14 +118,13 @@
             this.$watch('tableData', response => {
                     this.showData(response);
                 },
-                {immediate: true})
-            this.fields.push({key: 'name', label: 'Shop name'});
+                {immediate: true});
+
+            this.fields.push({key: 'name', label: 'Shop name', sortable: true});
             this.fields.push({key: 'street', label: 'Street'});
-            this.fields.push({key: 'type1', label: 'shop type 1'});
-            this.fields.push({key: 'type2', label: 'shop type 2'});
             this.fields.push({key: 'addressLine1', label: 'Address line 1'});
-            this.fields.push({key: 'addressLine2', label: 'Address Line 2'});
             this.fields.push({key: 'phoneNumber', label: 'Phone Number'});
+            this.fields.push({key: 'actions', label: 'Actions'});
         },
         data() {
             return {
@@ -87,16 +141,18 @@
         },
         computed: {
             filteredItems() {
+                let filterArray = []
                 if (this.street === "All")
-                    return this.items.filter(shop => {
+                    filterArray =  this.items.filter(shop => {
                         return shop.name != null && shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
                     });
                 else {
-                    return this.items.filter(shop => {
+                    filterArray =  this.items.filter(shop => {
                         return shop.street === this.street &&
                             shop.name != null && shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase());
                     })
                 }
+                return filterArray;
             }
         },
         methods: {
@@ -124,6 +180,19 @@
 
             filterBrands() {
                 return this.filteredItems;
+            },
+
+            showAdditionalDetails(item){
+                item._showDetails = !item._showDetails;
+            },
+
+            customFilter(item, filter){
+                return item.name!= null && item.name.toLowerCase().includes(filter.toLowerCase())
+            },
+            onFiltered(filteredItems) {
+                // Trigger pagination to update the number of buttons/pages due to filtering
+                this.totalRows = filteredItems.length
+                this.currentPage = 1
             }
         }
     }

@@ -9,7 +9,7 @@
                 Shop Name
             </label>
             <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                <el-input v-model="shopName" placeholder="enter shopname"></el-input>
+                <el-input ref="shopName" v-model="shopName" placeholder="enter shopname"></el-input>
             </div>
         </div>
 
@@ -25,7 +25,7 @@
                         style="width: 200px"
                         :filterOption="filterOption"
                         notFoundContent="No Street Found"
-                v-model="street">
+                        ref="street" v-model="street">
                     <a-select-option value="G M Palya">G M Palya</a-select-option>
                     <a-select-option value="Jogupalya G Street">Jogupalya G Street</a-select-option>
                     <a-select-option value="Thippasandra">ThippaSandra</a-select-option>
@@ -82,7 +82,7 @@
                 Address Line 1
             </label>
             <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                <el-input type="text" v-model="addressLine1" placeholder="Address Line 1"></el-input>
+                <el-input ref="addressLine1" type="text" v-model="addressLine1" placeholder="Address Line 1"></el-input>
             </div>
         </div>
 
@@ -100,7 +100,7 @@
                 Phone Number
             </label>
             <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                <el-input type="tel" v-model="phoneNumber" placeholder="Phone number"></el-input>
+                <el-input ref="phoneNumber" type="tel" v-model="phoneNumber" placeholder="Phone number"></el-input>
             </div>
         </div>
 
@@ -169,14 +169,23 @@
 
             validateShop(){
                 let errorMessage = null
-                if(this.shopName == null )
+                console.log(this.$refs)
+                if(!this.shopName ) {
                     errorMessage = "please enter shopName";
-                else if(this.street == null)
+                    this.$refs["shopName"].focus();
+                }
+                else if(!this.street) {
                     errorMessage = "please enter street";
-                else if(this.addressLine1 == null)
+                    this.$refs["street"].focus();
+                }
+                else if(!this.addressLine1) {
                     errorMessage = "please enter Address Line 1";
-                else if (this.phoneNumber == null)
+                    this.$refs["addressLine1"].focus();
+                }
+                else if (!this.phoneNumber) {
                     errorMessage = "please enter phone Number";
+                    this.$refs["phoneNumber"].focus();
+                }
                 if(errorMessage == null){
                     return true;
                 }

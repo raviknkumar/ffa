@@ -23,6 +23,10 @@
                 else
                     return false
             }
+        },
+        mounted(){
+            // eslint-disable-next-line no-console
+            console.clear();
         }
     }
 </script>

@@ -147,8 +147,8 @@
                 </div>
 
                 <div v-if="this.pricing.tableVisible">
-                    <b-table show-empty responsive small outlined caption-top bordered
-                             :items="pricingFilteredItems" :fields="pricingFields"
+                    <b-table show-empty responsive small outlined caption-top bordered head-variant="light"
+                             :items="pricingFilteredItems" :fields="pricingFields" sort-icon-left
                              :current-page="pricing.currentPage"
                              :per-page="pricing.perPage" :busy="pricing.isBusy">
 

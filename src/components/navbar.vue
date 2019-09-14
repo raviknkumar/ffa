@@ -8,7 +8,7 @@
                 <i class="el-icon-s-unfold"></i>
             </a>
 
-            <span class="navbar-text has-text-weight-bold">
+            <span class="navbar-text has-text-weight-bold text--darken-2">
                 Field Force Automation
             </span>
 
@@ -28,6 +28,7 @@
         </nav>
 
         <div id="mySidenav" class="sidenav">
+
             <div class="row">
                 <div class="col-6 col-sm-6 col-md-6" style="margin-left: 1vw;font-size: 20px">
                     <el-avatar style="background-color: purple">{{this.avtarText}}</el-avatar>
@@ -92,11 +93,14 @@
             openNav() {
                 document.getElementById("mySidenav").style.width = "250px";
                 document.getElementById("main").style.marginLeft = "260px";
+                document.getElementById("myNavbar").style.marginLeft = "250px";
                 this.drawer = true
             },
             closeNav() {
                 document.getElementById("mySidenav").style.width = "0";
                 document.getElementById("main").style.marginLeft = "1vw";
+                document.getElementById("myNavbar").style.marginLeft = "0px";
+
                 this.drawer = false
             },
             logout() {
@@ -119,7 +123,7 @@
     .sidenav {
         height: 100%;
         width: 0;
-        margin-top: 3.5rem;
+        margin-top: 0;
         position: fixed;
         z-index: 2016;
         top: 0;

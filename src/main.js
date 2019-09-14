@@ -25,6 +25,7 @@ Vue.component('b-modal', BModal);
 Vue.component('b-modal', BModal);
 Vue.component('b-spinner', BSpinner);
 
+
 import sweetAlert from 'vue-sweetalert2'
 
 Vue.use(sweetAlert);

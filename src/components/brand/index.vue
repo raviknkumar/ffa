@@ -4,11 +4,11 @@
         <el-tabs type="card" v-model="activeTab">
             <el-tab-pane label="Add" name="0">
                 <div class="row form-group required">
-                    <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3 control-label">
-                        Brand Name
+                    <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3 ">
+                        <h6 class="control-label">Brand Name </h6>
                     </div>
                     <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                        <el-input type="text" v-model="brandName" placeholder="Enter Brand Name.."></el-input>
+                        <el-input ref="brandName" type="text" v-model="brandName" placeholder="Enter Brand Name.."></el-input>
                     </div>
                 </div>
                 <el-button type="primary" @click="addBrand">
@@ -35,8 +35,12 @@
 
                     <b-container fluid>
                         <b-table show-empty responsive small outlined hover striped
-                                 :items="filteredItems" :fields="fields" :current-page="currentPage"
-                                 :per-page="perPage" :filter="filter">
+                                 :items="items" :fields="fields" :current-page="currentPage"
+                                 :per-page="perPage"
+                                 :sort-by.sync="sortBy"
+                                 :sort-desc.sync="sortDesc"
+                                 sort-icon-left=true
+                                 :filter="filterbrandText" :filterIncludedFields="filterFields" :filter-function="customFilter" @filtered="onFiltered">
                         </b-table>
                         <b-pagination
                                 v-model="currentPage"
@@ -64,17 +68,18 @@
                 items: [],
                 fields: [],
                 currentPage: 1, perPage: 10,
-                pageOptions: [5, 10, 15], sortBy: null, sortDesc: false, sortDirection: 'asc', filter: null,
+                pageOptions: [5, 10, 15], sortBy: "name", sortDesc: false, sortDirection: 'asc', filter: null,
                 index: null,
                 totalRows: 0,
                 activeTab: "0",
 
-                filterbrandText: ""
+                filterbrandText: "",
+                filterFields:["name"]
             }
         },
         mounted() {
             this.fields.push({key: 'id', label: 'Id'});
-            this.fields.push({key: 'name', label: 'Brand Name'});
+            this.fields.push({key: 'name', label: 'Brand Name', sortable : true});
             this.getBrands();
         },
 
@@ -114,8 +119,8 @@
             },
 
             validateData() {
-
-                if (this.brandName == null) {
+                if (!this.brandName ) {
+                    this.$refs["brandName"].focus();
                     showWarningDialog(this.$swal, "please enter brand name")
                     return false;
                 }
@@ -150,6 +155,15 @@
             },
             filterBrands() {
                 return this.filteredItems;
+            },
+
+            customFilter(item, filter){
+                return item.name!= null && item.name.toLowerCase().includes(filter.toLowerCase())
+            },
+            onFiltered(filteredItems) {
+                // Trigger pagination to update the number of buttons/pages due to filtering
+                this.totalRows = filteredItems.length
+                this.currentPage = 1
             }
         }
     }

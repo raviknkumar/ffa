@@ -169,7 +169,6 @@
 
             validateShop(){
                 let errorMessage = null
-                console.log(this.$refs)
                 if(!this.shopName ) {
                     errorMessage = "please enter shopName";
                     this.$refs["shopName"].focus();

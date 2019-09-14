@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <navbar v-if="layout"></navbar>
+        <navbar id="myNavbar" v-if="layout"></navbar>
         <transition>
             <router-view id="main" style="margin-left: 1vw"/>
         </transition>
@@ -25,8 +25,7 @@
             }
         },
         mounted(){
-            // eslint-disable-next-line no-console
-            console.clear();
+
         }
     }
 </script>

@@ -10,7 +10,7 @@
                         Item Name
                     </div>
                     <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                        <el-input v-model="itemName" placeholder="enter Item Name"></el-input>
+                        <el-input ref="itemName" v-model="itemName" placeholder="enter Item Name"></el-input>
                     </div>
                 </div>
 
@@ -19,7 +19,7 @@
                         Brand
                     </div>
                     <div class="col-10 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                        <a-select v-model="brandIndex"
+                        <a-select v-model="brandIndex" ref="brand"
                                   showSearch
                                   placeholder="Select a Brand"
                                   optionFilterProp="children"
@@ -39,8 +39,8 @@
                         Box Price
                     </div>
                     <div class="col-8 col-sm-4 col-md-3 col-xl-3 col-lg-3">
-                        <el-input ype="number" min="0" v-model="boxPrice" placeholder="enter Item Box Price">
-                            <template slot="append"><i class="fa fa-rupee" aria-hidden="false"></i></template>
+                        <el-input type="number" min="0" v-model="boxPrice" placeholder="enter Item Box Price">
+                            <template slot="prepend"><i class="fa fa-rupee" aria-hidden="false"></i></template>
                         </el-input>
                     </div>
                 </div>
@@ -50,8 +50,8 @@
                         Piece Price
                     </div>
                     <div class="col-8 col-sm-4 col-md-3 col-xl-3 col-lg-3">
-                        <el-input ype="number" min="0" v-model="piecePrice" placeholder="enter Item Piece Price">
-                            <template slot="append"><i class="fa fa-rupee" aria-hidden="false"></i></template>
+                        <el-input type="number" min="0" v-model="piecePrice" placeholder="enter Item Piece Price">
+                            <template slot="prepend"><i class="fa fa-rupee" aria-hidden="false"></i></template>
                         </el-input>
                     </div>
                 </div>
@@ -60,11 +60,14 @@
                     <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3 control-label">
                         Tax (%)
                     </div>
-                    <div class="col-8 col-sm-4 col-md-3 col-xl-3 col-lg-3">
-                        <el-input ype="number" min="0" max="100"
-                                  v-model="taxPercent" placeholder="enter Item Tax In percent">
-                            <template slot="append"><i class="fa fa-percent" aria-hidden="false"></i></template>
-                        </el-input>
+                    <div class="col-10 col-sm-8 col-md-3 col-xl-4 col-lg-4">
+                        <a-input style="width: 100%" addonAfter="%" ref="taxPercent" type="number" min="0" max="100"
+                                 v-model="taxPercent" placeholder="enter Item Tax In percent" >
+                        </a-input>
+<!--                        <el-input ref="taxPercent" type="number" min="0" max="100"-->
+<!--                                  v-model="taxPercent" placeholder="enter Item Tax In percent">-->
+<!--                            <template slot="prepend"><i class="fa fa-percent" aria-hidden="false"></i></template>-->
+<!--                        </el-input>-->
                     </div>
                 </div>
 
@@ -109,7 +112,7 @@
 
 
                 <b-container fluid>
-                    <b-table show-empty responsive small  hover striped bordered
+                    <b-table show-empty responsive small  hover striped outlined
                              :items="filteredItems" :fields="fields" :current-page="currentPage"
                              :per-page="perPage" :filter="filter" :busy="isBusy">
 
@@ -117,6 +120,11 @@
                             <b-spinner variant="primary" class="align-middle"></b-spinner>
                             <strong style="color: #1482f0">Loading...</strong>
                         </div>
+
+                        <template slot="name" slot-scope="data">
+                            <div style="display:block;width:30vw;overflow-x: auto" class="badge"><h6>{{ data.value }}</h6></div>
+                        </template>
+
                     </b-table>
                     <b-pagination
                             v-model="currentPage"
@@ -164,16 +172,19 @@
         },
         computed: {
             filteredItems() {
+                let filterArray = [];
                 if (this.brandFilterId === 'All')
-                    return this.items.filter(item => {
+                    filterArray =  this.items.filter(item => {
                         return item.name != null && item.name.toLowerCase().includes(this.itemNameFilterText.toLowerCase())
                     })
                 else {
-                    return this.items.filter(item => {
+                    filterArray =  this.items.filter(item => {
                         return item.brandId === this.brandFilterId &&
                             item.name != null && item.name.toLowerCase().includes(this.itemNameFilterText.toLowerCase())
                     })
                 }
+                this.onFilterigData(filterArray);
+                return filterArray;
             }
         },
         created() {
@@ -230,16 +241,25 @@
 
             validateData() {
                 let errorMessage = "";
-                if (this.itemName === null) {
+                if (!this.itemName) {
+                    this.$refs["itemName"].focus();
                     errorMessage = "please enter itemName"
-                } else if (this.brandIndex == null)
+                } else if (this.brandIndex == null) {
+                    this.$refs["brand"].focus();
                     errorMessage = "please enter brand name"
-                else if (this.taxPercent == null)
-                    errorMessage = "please enter tax percent"
-                else if (this.taxPercent < 0)
+                }
+                else if (this.taxPercent == null || isNaN(this.taxPercent)) {
+                    this.$refs["taxPercent"].focus();
+                    errorMessage = "please enter valid tax percent"
+                }
+                else if (this.taxPercent < 0){
+                    this.$refs["taxPercent"].focus();
                     errorMessage = "Tax percent cannot be negative";
-                else if (this.taxPercent > 100)
+                }
+                else if (this.taxPercent > 100) {
+                    this.$refs["taxPercent"].focus();
                     errorMessage = "Tax percent cannot be greater than 100";
+                }
 
                 if (errorMessage !== "") {
                     showWarningDialog(this.$swal, errorMessage)
@@ -306,6 +326,10 @@
 
             filterItems() {
                 return this.filteredItems;
+            },
+            onFilterigData(data){
+                this.totalRows = data.length;
+                this.currentPage = 1;
             }
         }
     }

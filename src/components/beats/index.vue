@@ -1,21 +1,32 @@
 <template>
     <div>
-        <div class="row">
-            <div class="col-8 col-sm-5 col-md-3 col-xl-3 col-lg-3">
-                Street Located
-            </div>
-            <div class="col-7 col-sm-5 col-md-5 col-xl-5 col-lg-5">
-                <el-select v-model="street" placeholder="select street"
-                           filterable @change="filterShops()">
-                    <el-option value="all">All</el-option>
-                    <el-option value="G M Palya">G M Palya</el-option>
-                    <el-option value="Jogupalya G Street">Jogupalya G Street</el-option>
-                    <el-option value="Thippasandra">ThippaSandra</el-option>
-                    <el-option value="Annasandrapalya">Anna sandra Palya</el-option>
-                    <el-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</el-option>
-                    <el-option value="Kaggadasapura">Kaggadasapura</el-option>
-                </el-select>
-            </div>
+        <div class="row" style="margin: 5px">
+            <a-input-group compact>
+                <a-select
+                        showSearch
+                        placeholder="Street Filter"
+                        optionFilterProp="children"
+                        style="width: 40%;height: 40px"
+                        notFoundContent="No Street Found"
+                        @change="handleChange"
+                        :filterOption="filterOption">
+                    <a-select-option value="All">All</a-select-option>
+                    <a-select-option value="G M Palya">G M Palya</a-select-option>
+                    <a-select-option value="Jogupalya G Street">Jogupalya G Street</a-select-option>
+                    <a-select-option value="Thippasandra">ThippaSandra</a-select-option>
+                    <a-select-option value="Annasandrapalya">Anna sandra Palya</a-select-option>
+                    <a-select-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</a-select-option>
+                    <a-select-option value="Kaggadasapura">Kaggadasapura</a-select-option>
+                </a-select>
+                <a-input-search
+                        enterButton
+                        placeholder="Filter by ShopName"
+                        style="width: 60%"
+                        v-model="shopNameFilterText"
+                        @input="filterShops"
+                        @search="filterShops"
+                />
+            </a-input-group>
         </div>
 
         <div v-if="shopLoading" class="text-center my-2">
@@ -33,6 +44,9 @@
                 {{shop.name}}
             </b-button>
         </div>
+        <div class="row d-flex justify-content-center" v-if="filteredShops.length === 0">
+            No shops Found
+        </div>
     </div>
 </template>
 
@@ -49,6 +63,7 @@
                 filteredShops: [],
                 street: null,
                 shopLoading: false,
+                shopNameFilterText: ""
             }
         },
         methods: {
@@ -58,18 +73,24 @@
             },
 
             filterShops() {
-                if (this.street === 'all')
+                if (this.street === 'All')
                     this.filteredShops = this.shops;
                 else {
                     this.filteredShops = this.shops.filter(shop => {
                         return shop.street === this.street
                     });
                 }
+                this.filteredShops = this.filteredShops.filter(shop => {
+                    return shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
+                });
             },
+            handleChange(value) {
+                this.street = value;
+                this.filterShops();
+            }
 
         },
         created() {
-            // this.shopLoading = true;
             const loading = this.$loading({
                 lock: true,
                 text: 'Loading',
@@ -82,11 +103,9 @@
                     this.filteredShops = res.data.data
                 } else
                     showErrorDialog(this.$swal, res.data.errorMessage);
-                // this.shopLoading = false;
                 loading.close()
             }).catch(err => {
                 showErrorDialog(this.$swal, err.message);
-                // this.shopLoading = false;
                 loading.close()
             })
         }
@@ -96,3 +115,26 @@
 <style scoped>
 
 </style>
+
+<!--<div class="col-5 col-sm-5 col-md-3 col-xl-3 col-lg-3">-->
+<!--    <el-select v-model="street" placeholder="select street"-->
+<!--               filterable @change="filterShops()">-->
+<!--        <el-option value="all">All</el-option>-->
+<!--        <el-option value="G M Palya">G M Palya</el-option>-->
+<!--        <el-option value="Jogupalya G Street">Jogupalya G Street</el-option>-->
+<!--        <el-option value="Thippasandra">ThippaSandra</el-option>-->
+<!--        <el-option value="Annasandrapalya">Anna sandra Palya</el-option>-->
+<!--        <el-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</el-option>-->
+<!--        <el-option value="Kaggadasapura">Kaggadasapura</el-option>-->
+<!--    </el-select>-->
+<!--</div>-->
+<!--<div class="col-7 col-sm-5 col-md-5 col-xl-5 col-lg-5">-->
+<!--    <a-input-search-->
+<!--            enterButton-->
+<!--            placeholder="Filter by ShopName"-->
+<!--            style="width: inherit"-->
+<!--            v-model="shopNameFilterText"-->
+<!--            @input="filterShops"-->
+<!--            @search="filterShops"-->
+<!--    />-->
+<!--</div>-->

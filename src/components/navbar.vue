@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+        <nav class="navbar navbar-light sticky" style="background-color: #e3f2fd;">
             <a v-if="drawer" @click="closeNav()" style="margin-left: 1vw;color: #000;font-size: large">
                 <i class="el-icon-s-fold"></i>
             </a>
@@ -96,24 +96,23 @@
             openNav() {
                 document.getElementById("mySidenav").style.width = "250px";
                 document.getElementById("main").style.marginLeft = "260px";
-                document.getElementById("myNavbar").style.marginLeft = "250px";
                 this.drawer = true
             },
             closeNav() {
                 document.getElementById("mySidenav").style.width = "0";
                 document.getElementById("main").style.marginLeft = "1vw";
-                document.getElementById("myNavbar").style.marginLeft = "0px";
-
                 this.drawer = false
             },
             logout() {
-                // eslint-disable-next-line no-undef,no-console
                 logout(localStorage, this.$router);
             }
         },
         mounted() {
             if (localStorage.username) {
                 this.name = localStorage.username;
+                this.name.split(" ").forEach(word =>{
+                    this.avtarText +=word.charAt(0);
+                });
                 this.avtarText = this.name.charAt(0).toUpperCase();
             }
         },
@@ -125,8 +124,8 @@
 
     .sidenav {
         height: 100%;
+        margin-top: 3.5rem;
         width: 0;
-        margin-top: 0;
         position: fixed;
         z-index: 2016;
         top: 0;
@@ -165,5 +164,12 @@
 
     .sidebar li.active > a {
         color: #409eff;
+    }
+
+    .sticky{
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 2000;
     }
 </style>

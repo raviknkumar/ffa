@@ -40,9 +40,9 @@
                             <a-input-search
                                     placeholder="Filter by ShopName"
                                     style="width: 60%"
-                                    v-model="shopNameFilterText"
+                                    :value="shopNameFilterText"
                                     @search="filterPricingItems"
-                                    @input="filterPricingItems"
+                                    @input="evt=>shopNameFilterText = evt.target.value"
                                     enterButton
                             />
                         </a-input-group>

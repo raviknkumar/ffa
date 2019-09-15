@@ -29,7 +29,8 @@
                 <a-input-search
                         placeholder="Filter by shop Name"
                         style="width: 300px"
-                        v-model="shopNameFilterText"
+                        :value="shopNameFilterText"
+                        @input="evt => shopNameFilterText = evt.target.value"
                         @search="filterBrands"
                         enterButton
                 />

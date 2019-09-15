@@ -27,7 +27,8 @@
                                     enterButton
                                     placeholder="Enter brandname.. to filter"
                                     style="width: 300px"
-                                    v-model="filterbrandText"
+                                    :value="filterbrandText"
+                                    @input="evt=>filterbrandText = evt.target.value"
                                     @search="filterBrands"
                             />
                         </div>

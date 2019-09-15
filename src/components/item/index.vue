@@ -103,7 +103,8 @@
                         <a-input-search
                                 placeholder="Enter brandname.. to filter"
                                 style="width: 300px"
-                                v-model="itemNameFilterText"
+                                :value="itemNameFilterText"
+                                @input="evt=>itemNameFilterText = evt.target.value"
                                 @search="filterItems"
                                 enterButton
                         />

@@ -34,5 +34,6 @@
 
     #main {
         overflow: auto;
+        margin-top: 3.5rem;;
     }
 </style>

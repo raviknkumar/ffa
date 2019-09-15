@@ -42,8 +42,12 @@
                      :items="items" :fields="fields" :current-page="currentPage"
                      :per-page="perPage"
                      :filter="shopNameFilterText" filterIncludedFields="name" :filter-function="customFilter"
-                     @filtered="onFiltered"
+                     @filtered="onFiltered" caption-top
                      selectable select-mode="single" @row-clicked="showAdditionalDetails" sort-icon-left>
+
+                <template slot="table-caption">
+                    <span style="color: red">* </span>Click on row to get Additional Info
+                </template>
 
                 <template slot="name" slot-scope="data">
                     <div style="display:block;width:30vw;overflow-x: auto" class="badge"><h6>{{ data.value }}</h6></div>

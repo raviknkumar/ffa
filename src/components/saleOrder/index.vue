@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div class="row d-flex justify-content-center">
-            <h5>Manage Customer Orders </h5>
-        </div>
+        <h5 class="d-flex justify-content-center blue--text" style="margin-top: 1vh">
+            Manage Customer Orders
+        </h5>
         <el-tabs type="card">
             <el-tab-pane name="0" label="Generate And Download" style="margin-left: 1vw">
                 <div>
@@ -171,6 +171,8 @@
                                            ref="shopFilter"
                                            :value='pricing.filterItemText'
                                            @input="evt => pricing.filterItemText = evt.target.value"/>
+                                    <span v-if="pricing.filterItemText.length > 0"
+                                          class="clearButton" @click="pricing.filterItemText = ''"> ✖ </span>
                                     <b-button class="buttonPushLeft" @click="filterPricingItems" variant="primary">
                                         <i class="fa fa-search" aria-hidden="false"></i>
                                     </b-button>
@@ -610,7 +612,7 @@
             },
 
             changeStyle(item) {
-                if (item.originalPrice == null || item.originalPrice < 0 || item.originalPrice == "")
+                if (item.originalPrice == null || item.originalPrice < 0 || item.originalPrice === "")
                     this.$refs[item.id].style.border = "1px solid red";
                 else {
                     this.$refs[item.id].style.border = "none";
@@ -654,6 +656,18 @@
         outline: none;
         padding: 0 15px;
         transition: border-color .2s cubic-bezier(.645, .045, .355, 1);
+    }
+
+    .clearButton{
+        position: absolute;
+        float:left;
+        right: 40px;
+        vertical-align: middle;
+        padding: 5px;
+        top:3px;
+        font-size: 14px;
+        font-weight: bold ;
+        cursor: pointer;
     }
 
     .width-60 {

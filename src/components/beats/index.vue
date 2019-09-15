@@ -53,6 +53,7 @@
     import {getShops, getStreets} from "@/api/ffaEndPoints";
     import {showErrorDialog} from "@/commons/commons";
     import store from "@/vuexStore/index"
+    import "@/../public/styles/style.css"
 
     export default {
         name: "index",
@@ -139,38 +140,5 @@
 </script>
 
 <style scoped>
-
-    .formGroup {
-        display: flex;
-        flex-direction: row;
-        position: absolute;
-        right: 0;
-        width: 35%;
-        -webkit-transition: width 0.4s;
-        transition: width 0.4s;
-    }
-
-    .formGroup .expandInput {
-        width: 100%;
-        border-top: 2px solid #ccc;
-        border-bottom: 2px solid #ccc;
-        border-left: 2px solid #ccc;
-        border-radius: 4px 0 0 4px;
-        font-size: 16px;
-        background-color: white;
-        padding: 5px;
-    }
-
-    .expandInput:focus {
-        outline: none
-    }
-
-    .formGroup:focus-within {
-        width: 90%;
-    }
-
-    .buttonPushLeft {
-        margin-left: -1px;
-    }
 
 </style>

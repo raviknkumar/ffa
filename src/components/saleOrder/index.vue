@@ -157,17 +157,25 @@
                             <strong style="color: #1482f0">Loading...</strong>
                         </div>
 
-                        <template slot="table-caption">
-                            <a-input-search
-                                    enterButton
-                                    placeholder="Filter by Item Name"
-                                    style="width: 200px"
-                                    v-model="pricing.filterItemText"
-                                    @search="filterPricingItems"
-                            />
-                            <b-button variant="danger" @click="updatePrice()" style="float: right;margin-right:5px">
-                                <i class="fa fa-cloud-upload" style="font-size: 18px" title="upload"/> price
-                            </b-button>
+                        <template slot="table-caption" class="row">
+                            <b-row>
+                                <div class="col-sm-4 col-4 col-md-3 col-lg-2 col-xl-2"
+                                     style="margin-left:1vw;padding: 1px">
+                                    <b-button variant="danger" @click="updatePrice()">
+                                        <i class="fa fa-cloud-upload" style="font-size: 18px" title="upload"></i> price
+                                    </b-button>
+                                </div>
+
+                                <div class="formGroup" ref="formGroup">
+                                    <input type="search" placeholder="Filter by Shop Name" class="expandInput"
+                                           ref="shopFilter"
+                                           :value='pricing.filterItemText'
+                                           @input="evt => pricing.filterItemText = evt.target.value"/>
+                                    <b-button class="buttonPushLeft" @click="filterPricingItems" variant="primary">
+                                        <i class="fa fa-search" aria-hidden="false"></i>
+                                    </b-button>
+                                </div>
+                            </b-row>
                         </template>
 
                         <template slot-scope="data" slot="itemName">
@@ -235,16 +243,16 @@
                 dialog: false,
                 downloadActions: {title: '', content: ''},
                 streetLoading: false,
-                streets:[],
+                streets: [],
 
                 pricingFields: [
                     {key: "itemName", label: "Item", sortable: true, sortDirection: 'desc'},
                     {key: "pieces", label: "Pieces", sortable: true,},
                     {key: "boxes", label: "Boxes", sortable: true,},
                     {key: "taxPrice", label: "TaxPrice(%)", sortable: true},
-                    {key: "originalPrice", label: "Price",  sortable: true,},
-                    {key: "salePrice", label: "Amount",  sortable: true}
-                    ],
+                    {key: "originalPrice", label: "Price", sortable: true,},
+                    {key: "salePrice", label: "Amount", sortable: true}
+                ],
 
                 pricing: {
                     date: null,
@@ -257,7 +265,7 @@
 
                     totalRows: 0,
                     isBusy: false,
-                    tableVisible: false,
+                    tableVisible: true, /* TODO: edit to false */
                     shopLoading: false,
 
                     saleOrder: {},
@@ -614,7 +622,10 @@
                 return this.filteredItems;
             },
 
-            filterPricingItems() {
+            filterPricingItems(evt) {
+                if (evt.type === 'click' || evt.type === 'touchstart') {
+                    document.activeElement.blur();
+                }
                 return this.pricingFilteredItems;
             },
         },

@@ -30,7 +30,8 @@
                                     enterButton
                                     placeholder="Enter Streetname.. to filter"
                                     style="width: 300px"
-                                    v-model="filterStreetText"
+                                    :value="filterStreetText"
+                                    @input="evt => filterStreetText = evt.target.value"
                                     @search="filterStreets"
                             />
                         </div>

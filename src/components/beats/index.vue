@@ -18,9 +18,9 @@
                     {{street.name}}
                 </a-select-option>
             </a-select>
-            <div class="formGroup" style="margin-right: 10px">
-                <input type="search" placeholder="Filter by Shop Name" class="expandInput"
-                       v-model="shopNameFilterText"
+            <div class="formGroup" style="margin-right: 10px" ref="formGroup">
+                <input type="search" placeholder="Filter by Shop Name" class="expandInput" ref="shopFilter"
+                       :value='shopNameFilterText'
                        @input="filterShops"/>
                 <b-button class="buttonPushLeft" @click="filterShops" variant="primary">
                     <i class="fa fa-search" aria-hidden="false"></i>
@@ -74,7 +74,17 @@
                 this.$router.push('/beats/' + shop.id);
             },
 
-            filterShops() {
+            filterShops(evt) {
+                // window.getSelection().removeAllRanges();
+                if(evt.type === 'keypress' || evt.type === 'input')
+                {
+                    this.shopNameFilterText = evt.target.value
+                }
+                if(evt.type === 'click' || evt.type === 'touchstart')
+                {
+                    document.activeElement.blur();
+                }
+
                 if (this.street === 'All') {
                     this.filteredShops = this.shops.filter(shop => {
                         return shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())

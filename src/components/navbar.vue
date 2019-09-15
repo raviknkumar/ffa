@@ -8,7 +8,7 @@
                 <i class="el-icon-s-unfold"></i>
             </a>
 
-            <span class="navbar-text has-text-weight-bold text--darken-2">
+            <span class="navbar-text has-text-weight-bold text--darken-2 col-8 col-sm-8 col-md-4 col-lg-4 col-xl-3">
                 Field Force Automation
             </span>
 
@@ -47,7 +47,7 @@
                 <i class="el-icon-office-building"></i>&nbsp;Shop
             </router-link>
             <router-link to="/brand" @click.native="closeNav()">
-                <i class="el-icon-document"></i>&nbsp;Brand
+                <i class="fa fa-shopping-bag"></i>&nbsp;Brand
             </router-link>
             <router-link to="/item" @click.native="closeNav()">
                 <i class="el-icon-shopping-cart-2"></i>&nbsp;Item

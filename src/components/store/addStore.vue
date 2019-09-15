@@ -25,13 +25,13 @@
                         style="width: 200px"
                         :filterOption="filterOption"
                         notFoundContent="No Street Found"
+                        v-loading="streetLoading"
                         ref="street" v-model="street">
-                    <a-select-option value="G M Palya">G M Palya</a-select-option>
-                    <a-select-option value="Jogupalya G Street">Jogupalya G Street</a-select-option>
-                    <a-select-option value="Thippasandra">ThippaSandra</a-select-option>
-                    <a-select-option value="Annasandrapalya">Anna sandra Palya</a-select-option>
-                    <a-select-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</a-select-option>
-                    <a-select-option value="Kaggadasapura">Kaggadasapura</a-select-option>
+                    <a-select-option v-for="street in streets"
+                                     :key="street._id"
+                                     :value="street.name">
+                        {{street.name}}
+                    </a-select-option>
                 </a-select>
             </div>
         </div>
@@ -105,15 +105,9 @@
         </div>
 
         <div class="row d-flex justify-content-center justify-content-lg-center justify-content-md-center">
-<!--            <div class="col-5 col-sm-3 col-md-2 col-xl-2 col-lg-2">-->
-<!--                <el-button type="primary">Capture Location</el-button>-->
-<!--            </div>-->
             <div class="col-4 offset-2 col-sm-3 col-md-2 col-xl-2 col-lg-2">
                 <el-button type="primary" @click="addShop()">Save</el-button>
             </div>
-<!--            <div class="col-3 col-sm-3 col-md-2 col-xl-2 col-lg-2">-->
-<!--                <el-button type="primary">Save And Order</el-button>-->
-<!--            </div>-->
         </div>
 
     </div>
@@ -123,7 +117,7 @@
 
     /* eslint-disable */
 
-    import {addShop} from "@/api/ffaEndPoints";
+    import {addShop, getStreets} from "@/api/ffaEndPoints";
     import {processLoading, showErrorDialog, showSuccessDialog, showWarningDialog} from "@/commons/commons";
 
     export default {
@@ -138,10 +132,27 @@
                 type1: 'GOI',
                 type2: 'Executive Basic',
                 errorMessage:null,
+
+                streetLoading : false,
+                streets:[],
             }
         },
+        mounted(){
+            this.streetLoading = true
+            getStreets({}).then(res => {
+                if (res.data.success) {
+                    this.streets = res.data.data
+                    this.streetLoading = false
+                } else {
+                    showErrorDialog(this.$swal, res.data.errorMessage)
+                    this.streetLoading = false
+                }
+            }).catch(err => {
+                showErrorDialog(this.$swal, err.message)
+                this.streetLoading = false
+            });
+        },
         methods: {
-
             addShop() {
                 if(this.validateShop() === false)
                     return;

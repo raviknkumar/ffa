@@ -40,6 +40,9 @@
                 </div>
             </div>
 
+            <router-link to="/street" @click.native="closeNav()">
+                <i class="fa fa-map-marker" aria-hidden="true"></i> Street
+            </router-link>
             <router-link to="/store" @click.native="closeNav()">
                 <i class="el-icon-office-building"></i>&nbsp;Shop
             </router-link>

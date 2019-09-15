@@ -57,6 +57,11 @@ export const routes = [
         component: () => import ("@/components/metrics/index"),
     },
     {
+        path: '/street',
+        name: ' Street Info',
+        component: () => import ("@/components/street/index"),
+    },
+    {
         path: '/store',
         name: ' Store Info',
         component: () => import ("@/components/store/index"),

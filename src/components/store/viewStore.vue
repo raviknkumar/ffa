@@ -14,13 +14,14 @@
                         style="width: 200px"
                         :filterOption="filterOption"
                         notFoundContent="No Street Found"
+                        v-loading="streetLoading"
                         v-model="street">
-                    <a-select-option value="G M Palya">G M Palya</a-select-option>
-                    <a-select-option value="Jogupalya G Street">Jogupalya G Street</a-select-option>
-                    <a-select-option value="Thippasandra">ThippaSandra</a-select-option>
-                    <a-select-option value="Annasandrapalya">Anna sandra Palya</a-select-option>
-                    <a-select-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</a-select-option>
-                    <a-select-option value="Kaggadasapura">Kaggadasapura</a-select-option>
+                    <a-select-option value="All">All</a-select-option>
+                    <a-select-option v-for="street in streets"
+                                     :key="street._id"
+                                     :value="street.name">
+                        {{street.name}}
+                    </a-select-option>
                 </a-select>
             </div>
 
@@ -40,7 +41,8 @@
             <b-table show-empty responsive small hover outlined class="text-center" head-variant="light"
                      :items="items" :fields="fields" :current-page="currentPage"
                      :per-page="perPage"
-                     :filter="shopNameFilterText" filterIncludedFields="name" :filter-function="customFilter" @filtered="onFiltered"
+                     :filter="shopNameFilterText" filterIncludedFields="name" :filter-function="customFilter"
+                     @filtered="onFiltered"
                      selectable select-mode="single" @row-clicked="showAdditionalDetails" sort-icon-left>
 
                 <template slot="name" slot-scope="data">
@@ -110,6 +112,9 @@
 
 <script>
 
+    import {getStreets} from "@/api/ffaEndPoints";
+    import {showErrorDialog} from "@/commons/commons";
+
     export default {
         name: "viewStore",
         props: ['tableData'],
@@ -125,6 +130,20 @@
             this.fields.push({key: 'addressLine1', label: 'Address line 1'});
             this.fields.push({key: 'phoneNumber', label: 'Phone Number'});
             this.fields.push({key: 'actions', label: 'Actions'});
+
+            this.streetLoading = true
+            getStreets({}).then(res => {
+                if (res.data.success) {
+                    this.streets = res.data.data
+                    this.streetLoading = false
+                } else {
+                    showErrorDialog(this.$swal, res.data.errorMessage)
+                    this.streetLoading = false
+                }
+            }).catch(err => {
+                showErrorDialog(this.$swal, err.message)
+                this.streetLoading = false
+            });
         },
         data() {
             return {
@@ -136,18 +155,20 @@
                 index: null,
                 totalRows: 0,
 
-                shopNameFilterText: ""
+                shopNameFilterText: "",
+                streetLoading: false,
+                streets:[],
             }
         },
         computed: {
             filteredItems() {
                 let filterArray = []
                 if (this.street === "All")
-                    filterArray =  this.items.filter(shop => {
+                    filterArray = this.items.filter(shop => {
                         return shop.name != null && shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
                     });
                 else {
-                    filterArray =  this.items.filter(shop => {
+                    filterArray = this.items.filter(shop => {
                         return shop.street === this.street &&
                             shop.name != null && shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase());
                     })
@@ -182,12 +203,12 @@
                 return this.filteredItems;
             },
 
-            showAdditionalDetails(item){
+            showAdditionalDetails(item) {
                 item._showDetails = !item._showDetails;
             },
 
-            customFilter(item, filter){
-                return item.name!= null && item.name.toLowerCase().includes(filter.toLowerCase())
+            customFilter(item, filter) {
+                return item.name != null && item.name.toLowerCase().includes(filter.toLowerCase())
             },
             onFiltered(filteredItems) {
                 // Trigger pagination to update the number of buttons/pages due to filtering

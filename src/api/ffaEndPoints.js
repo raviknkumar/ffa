@@ -133,3 +133,21 @@ export function getBlobData(url, params){
         params
     })
 }
+
+
+export function addStreet(data) {
+    return ffaRequest({
+        url:'/street',
+        method: 'post',
+        data,
+        headers
+    })
+}
+
+export function getStreets(params) {
+    return ffaRequest({
+        url:'/street',
+        method: 'get',
+        params
+    })
+}

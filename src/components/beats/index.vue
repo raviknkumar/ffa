@@ -7,19 +7,19 @@
                     optionFilterProp="children"
                     style="width: 55%;height: 40px"
                     notFoundContent="No Street Found"
-                    defaultValue="All"
-                    @change="handleChange"
+                    @change="filterShops"
+                    v-model="street"
+                    v-loading="streetLoading"
                     :filterOption="filterOption">
                 <a-select-option value="All">All</a-select-option>
-                <a-select-option value="G M Palya">G M Palya</a-select-option>
-                <a-select-option value="Jogupalya G Street">Jogupalya G Street</a-select-option>
-                <a-select-option value="Thippasandra">ThippaSandra</a-select-option>
-                <a-select-option value="Annasandrapalya">Anna sandra Palya</a-select-option>
-                <a-select-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</a-select-option>
-                <a-select-option value="Kaggadasapura">Kaggadasapura</a-select-option>
+                <a-select-option v-for="street in streets"
+                                 :key="street._id"
+                                 :value="street.name">
+                    {{street.name}}
+                </a-select-option>
             </a-select>
-            <div class="formGroup">
-                <input type="text" placeholder="Filter by Shop Name" class="expandInput"
+            <div class="formGroup" style="margin-right: 10px">
+                <input type="search" placeholder="Filter by Shop Name" class="expandInput"
                        v-model="shopNameFilterText"
                        @input="filterShops"/>
                 <b-button class="buttonPushLeft" @click="filterShops" variant="primary">
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-    import {getShops} from "@/api/ffaEndPoints";
+    import {getShops, getStreets} from "@/api/ffaEndPoints";
     import {showErrorDialog} from "@/commons/commons";
     import store from "@/vuexStore/index"
 
@@ -60,9 +60,12 @@
             return {
                 shops: [],
                 filteredShops: [],
-                street: null,
+                street: "All",
                 shopLoading: false,
-                shopNameFilterText: ""
+                shopNameFilterText: "",
+
+                streetLoading: false,
+                streets: [],
             }
         },
         methods: {
@@ -72,20 +75,16 @@
             },
 
             filterShops() {
-                if (this.street === 'All')
-                    this.filteredShops = this.shops;
-                else {
+                if (this.street === 'All') {
                     this.filteredShops = this.shops.filter(shop => {
-                        return shop.street === this.street
+                        return shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
+                    });
+                } else {
+                    this.filteredShops = this.shops.filter(shop => {
+                        return shop.street === this.street &&
+                            shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
                     });
                 }
-                this.filteredShops = this.filteredShops.filter(shop => {
-                    return shop.name.toLowerCase().includes(this.shopNameFilterText.toLowerCase())
-                });
-            },
-            handleChange(value) {
-                this.street = value;
-                this.filterShops();
             },
             filterOption(input, option) {
                 return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -93,6 +92,21 @@
 
         },
         created() {
+
+            this.streetLoading = true
+            getStreets({}).then(res => {
+                if (res.data.success) {
+                    this.streets = res.data.data
+                    this.streetLoading = false
+                } else {
+                    showErrorDialog(this.$swal, res.data.errorMessage)
+                    this.streetLoading = false
+                }
+            }).catch(err => {
+                showErrorDialog(this.$swal, err.message)
+                this.streetLoading = false
+            });
+
             const loading = this.$loading({
                 lock: true,
                 text: 'Loading',
@@ -121,9 +135,9 @@
         flex-direction: row;
         position: absolute;
         right: 0;
-        width: 20%;
+        width: 35%;
         -webkit-transition: width 0.4s;
-        transition: width 2s;
+        transition: width 0.4s;
     }
 
     .formGroup .expandInput {
@@ -134,6 +148,11 @@
         border-radius: 4px 0 0 4px;
         font-size: 16px;
         background-color: white;
+        padding: 5px;
+    }
+
+    .expandInput:focus {
+        outline: none
     }
 
     .formGroup:focus-within {

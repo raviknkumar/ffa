@@ -27,14 +27,14 @@
                                     style="width: 40%;height: 40px"
                                     :filterOption="filterOption"
                                     notFoundContent="No Street Found"
+                                    v-loading="streetLoading"
                                     v-model="street">
                                 <a-select-option value="All">All</a-select-option>
-                                <a-select-option value="G M Palya">G M Palya</a-select-option>
-                                <a-select-option value="Jogupalya G Street">Jogupalya G Street</a-select-option>
-                                <a-select-option value="Thippasandra">ThippaSandra</a-select-option>
-                                <a-select-option value="Annasandrapalya">Anna sandra Palya</a-select-option>
-                                <a-select-option value="DomlurMurugeshPalya">Domlur MurugeshPalya</a-select-option>
-                                <a-select-option value="Kaggadasapura">Kaggadasapura</a-select-option>
+                                <a-select-option v-for="street in streets"
+                                                 :key="street._id"
+                                                 :value="street.name">
+                                    {{street.name}}
+                                </a-select-option>
                             </a-select>
 
                             <a-input-search
@@ -213,7 +213,7 @@
 <script>
     import "@/../public/styles/style.css"
     import {formatDateHiphen, showErrorDialog, showSuccessDialog, showWarningDialog} from "@/commons/commons";
-    import {fetchOrders, fetchSaleOrder, generateFile, getBlobData, uploadPrice} from "@/api/ffaEndPoints";
+    import {fetchOrders, fetchSaleOrder, generateFile, getBlobData, getStreets, uploadPrice} from "@/api/ffaEndPoints";
     import {ffaProdUrl} from "@/api/request";
     import AInputGroup from "ant-design-vue/es/input/Group";
 
@@ -234,6 +234,8 @@
                 street: "All",
                 dialog: false,
                 downloadActions: {title: '', content: ''},
+                streetLoading: false,
+                streets:[],
 
                 pricingFields: [
                     {key: "itemName", label: "Item", sortable: true, sortDirection: 'desc'},
@@ -293,6 +295,20 @@
             this.fields.push({label: "name", key: "name"})
             this.fields.push({label: "street", key: "street"})
             this.fields.push("actions");
+
+            this.streetLoading = true
+            getStreets({}).then(res => {
+                if (res.data.success) {
+                    this.streets = res.data.data
+                    this.streetLoading = false
+                } else {
+                    showErrorDialog(this.$swal, res.data.errorMessage)
+                    this.streetLoading = false
+                }
+            }).catch(err => {
+                showErrorDialog(this.$swal, err.message)
+                this.streetLoading = false
+            });
 
         },
 

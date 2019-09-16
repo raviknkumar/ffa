@@ -15,7 +15,7 @@ exports.showWarningDialog = function(swal,message) {
         title: 'Alert',
         text: message,
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
     });
 };
 

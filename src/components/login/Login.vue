@@ -26,8 +26,13 @@
 
                             <div class="row d-flex justify-content-center form-control-custom">
                                 <div class="">
-                                    <el-button style="background: #fd7e14" round @click.native="handleLogin" >
-                                        <strong class="text-white">Sign in &nbsp; <i class="fa fa-sign-in" aria-hidden="false"></i></strong>
+                                    <el-button style="background: #fd7e14" round @click.native="handleLogin" :disabled="loginInProgress">
+                                        <strong class="text-white">
+                                            Sign in &nbsp; <i class="fa fa-sign-in" aria-hidden="false"></i>
+                                            <span v-if="loginInProgress">
+                                                <i class="fa fa-spinner fa-pulse fa-fw"></i>
+                                            </span>
+                                        </strong>
                                     </el-button>
                                 </div>
                             </div>
@@ -65,39 +70,42 @@
             return {
                 userName: null,
                 password: null,
-                pwdType:'password',
+                pwdType: 'password',
                 iconClass: 'fa fa-eye',
-                altText:'abc'
+                altText: 'abc',
+                loginInProgress: false,
             }
         },
         methods: {
-            showPwd(){
-                if(this.pwdType === 'password'){
+            showPwd() {
+                if (this.pwdType === 'password') {
                     this.pwdType = 'text'
                     this.iconClass = 'fa fa-eye-slash'
 
-                }
-                else {
+                } else {
                     this.pwdType = 'password'
                     this.iconClass = 'fa fa-eye'
                 }
             },
-            handleLogin(){
+            handleLogin() {
                 // validate userName
                 let data = {}
                 data.name = this.userName
                 data.password = btoa(this.password);
 
-                login(data).then(res=>{
-                    if(res.data.success){
+                this.loginInProgress = true;
+                login(data).then(res => {
+                    if (res.data.success) {
                         addUserName(this.userName);
                         addUser(res.data.data);
-                        this.$router.push({ name: 'home'});
-                    }
-                    else{
+                        this.loginInProgress = false
+                        this.$router.push({name: 'home'});
+                    } else {
+                        this.loginInProgress = false
                         showErrorDialog(this.$swal, res.data.errorMessage);
                     }
-                }).catch(err=>{
+                }).catch(err => {
+                    this.loginInProgress = false
                     showErrorDialog(this.$swal, err.message);
                 });
             }

@@ -19,27 +19,24 @@
 
                             <div class="form-control-custom">
                                 <label class="grey-text" for="password">Password </label>
-                                <el-input id="password" :type="pwdType" v-model="password" placeholder="password">
-                                    <el-button slot="append" type="primary" class="show-pwd" @click.native="showPwd()" style="background: none">
-                                        <i :class="iconClass" aria-hidden="false" ></i>
-                                    </el-button>
+                                <el-input id="password" :type="pwdType" v-model="password" placeholder="password" show-password="">
                                 </el-input>
                             </div>
 
                             <div class="form-control-custom">
                                 <label class="grey-text" for="password">Confirm Password </label>
-                                <el-input id="conformPassword" :type="confirmPwdType" v-model="confirmPassword" placeholder="confirm password"
+                                <el-input id="conformPassword" :type="confirmPwdType" show-password v-model="confirmPassword" placeholder="confirm password"
                                           @keyup.enter.native="signUp">
-                                    <el-button slot="append" type="primary" class="show-pwd" @click.native="showConfirmPwd()" style="background: none">
-                                        <i :class="confirmIconClass" aria-hidden="false" ></i>
-                                    </el-button>
                                 </el-input>
                             </div>
 
                             <div class="row d-flex justify-content-center form-control-custom">
                                 <div class="">
-                                    <el-button round class="btn-block z-depth-1 text-white" style="background: #1867c0" @click.native="signUp">
+                                    <el-button round class="btn-block z-depth-1 text-white" style="background: #1867c0" @click.native="signUp" :disabled="signUpInProgress">
                                         <strong class="text-white">Sign up&nbsp; <i class="fa fa-sign-in" aria-hidden="false"></i></strong>
+                                        <span v-if="signUpInProgress">
+                                                <i class="fa fa-spinner fa-pulse fa-fw"></i>
+                                            </span>
                                     </el-button>
                                 </div>
                             </div>
@@ -76,7 +73,8 @@
                 confirmPwdType:'password',
                 iconClass: 'fa fa-eye',
                 confirmIconClass: 'fa fa-eye',
-                altText:'abc'
+                altText:'abc',
+                signUpInProgress: false,
             }
         },
         methods: {
@@ -107,6 +105,7 @@
             signUp() {
                 let valid = this.validateData();
                 if (valid) {
+                    this.signUpInProgress = true
                     let data = {}
                     data.name = this.userName;
                     data.password = btoa(this.password)
@@ -114,18 +113,29 @@
                         if (res.data.success) {
                             addUserName(this.userName)
                             addUser(res.data.data)
+                            this.signUpInProgress = false
                             this.$router.push({name: 'home'});
                         } else {
+                            this.signUpInProgress = false
                             showErrorDialog(this.$swal, res.data.errorMessage);
                         }
                     }).catch(err => {
+                        this.signUpInProgress = false
                         showErrorDialog(this.$swal, err.message);
                     });
                 }
             },
 
             validateData(){
-                if(this.password === this.confirmPassword)
+                if(!this.userName){
+                    showWarningDialog(this.$swal, "Please Enter User Name")
+                    return false;
+                }
+                else if(!this.password ){
+                    showWarningDialog(this.$swal, "Please Enter Password")
+                    return false;
+                }
+                else if(this.password === this.confirmPassword)
                     return true;
                 else {
                     showWarningDialog(this.$swal, "Password is not same as confirm password, please check")

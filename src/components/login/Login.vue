@@ -1,16 +1,27 @@
 <template>
-    <section class="intro">
+    <div class="intro">
         <div class="inner">
             <div class="content row">
-                <div class="col">
+                <div class="col" style="position: relative">
                     <el-card class="card-image" shadow="always">
-                        <div class="hover-card form-header rounded">
-                            <div class="d-flex justify-content-center">
-                                <h3><i class="el-icon-lock text-white" aria-hidden="false"></i> <strong
-                                        class="text-white">&nbsp;Login </strong></h3>
-                            </div>
+                        <div class="hover-card form-header rounded text-center above">
+                            <h3><i class="el-icon-lock text-white" aria-hidden="false"></i> <strong
+                                    class="text-white">&nbsp;Login </strong></h3>
                         </div>
-                        <div>
+                        <div style="margin-top: 3rem">
+                            <b-alert
+                                    :show="dismissCountDown"
+                                    dismissible
+                                    variant="danger"
+                                    @dismissed="dismissCountDown=0"
+                                    @dismiss-count-down="countDownChanged">
+                                <h4 class="alert-heading">
+                                    Error !</h4>
+                                <p>
+                                    {{this.errorMessage}}
+                                </p>
+                            </b-alert>
+
                             <div class="form-control-custom">
                                 <label class="grey-text" for="email">User Name</label>
                                 <el-input id="email" type="text" v-model="userName">
@@ -26,7 +37,8 @@
 
                             <div class="row d-flex justify-content-center form-control-custom">
                                 <div class="">
-                                    <el-button style="background: #fd7e14" round @click.native="handleLogin" :disabled="loginInProgress">
+                                    <el-button style="background: #fd7e14" round @click.native="handleLogin"
+                                               :disabled="loginInProgress">
                                         <strong class="text-white">
                                             Sign in &nbsp; <i class="fa fa-sign-in" aria-hidden="false"></i>
                                             <span v-if="loginInProgress">
@@ -55,7 +67,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 </template>
 
 <script>
@@ -70,25 +82,26 @@
             return {
                 userName: null,
                 password: null,
-                pwdType: 'password',
-                iconClass: 'fa fa-eye',
                 altText: 'abc',
                 loginInProgress: false,
+                dismissSecs: 5,
+                dismissCountDown: 0,
+                errorMessage: null,
             }
         },
         methods: {
-            showPwd() {
-                if (this.pwdType === 'password') {
-                    this.pwdType = 'text'
-                    this.iconClass = 'fa fa-eye-slash'
-
-                } else {
-                    this.pwdType = 'password'
-                    this.iconClass = 'fa fa-eye'
-                }
+            countDownChanged(dismissCountDown) {
+                this.dismissCountDown = dismissCountDown
             },
+            showAlert(message) {
+                this.errorMessage = message;
+                this.dismissCountDown = this.dismissSecs
+            },
+
             handleLogin() {
-                // validate userName
+                if (this.validateData() === false)
+                    return;
+
                 let data = {}
                 data.name = this.userName
                 data.password = btoa(this.password);
@@ -102,12 +115,27 @@
                         this.$router.push({name: 'home'});
                     } else {
                         this.loginInProgress = false
-                        showErrorDialog(this.$swal, res.data.errorMessage);
+                        // showErrorDialog(this.$swal, res.data.errorMessage);
+                        this.showAlert(res.data.errorMessage);
                     }
                 }).catch(err => {
                     this.loginInProgress = false
-                    showErrorDialog(this.$swal, err.message);
+                    // showErrorDialog(this.$swal, err.message);
+                    this.showAlert(err.message);
                 });
+            },
+
+            validateData() {
+                let errorMessage = "";
+                if (!this.userName) {
+                    errorMessage += "Please Enter User Name!"
+                } else if (!this.password)
+                    errorMessage += "Please Enter password";
+                if (errorMessage === "") {
+                    return true
+                }
+                this.showAlert(errorMessage);
+                return false;
             }
         }
     }
@@ -170,6 +198,13 @@
         width: 100%;
     }
 
+    .above {
+        position: absolute;
+        top: -1vw;
+        left: 0;
+        width: 90%;
+        right: 0;
+    }
 
     @media (max-width: 575.98px) {
         .content {

@@ -11,7 +11,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
 import 'vuetify/dist/vuetify.min.css'
-import {BBadge, BButton, BTable, BRow, BCol, BContainer, BModal, BPagination, BSpinner} from 'bootstrap-vue'
+import {BBadge, BButton, BTable, BRow, BCol, BContainer, BModal, BPagination, BSpinner, BAlert} from 'bootstrap-vue'
 
 Vue.component('b-badge', BBadge)
 Vue.component('b-button', BButton)
@@ -24,6 +24,7 @@ Vue.component('b-modal', BModal);
 
 Vue.component('b-modal', BModal);
 Vue.component('b-spinner', BSpinner);
+Vue.component('b-alert', BAlert);
 
 
 import sweetAlert from 'vue-sweetalert2'

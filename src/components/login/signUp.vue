@@ -4,13 +4,23 @@
             <div class="content row">
                 <div class="col">
                     <el-card class="card-image" shadow="always">
-                        <div class="hover-card form-header rounded">
-                            <div class="d-flex justify-content-center">
-                                <h3><i class="fa fa-lock fa-2x text-white" aria-hidden="false"></i> <strong
-                                        class="text-white">&nbsp;Sign Up </strong></h3>
-                            </div>
+                        <div class="hover-card form-header rounded above text-center">
+                            <h3><i class="fa fa-lock fa-2x text-white" aria-hidden="false"></i> <strong
+                                    class="text-white">&nbsp;Sign Up </strong></h3>
                         </div>
-                        <div>
+                        <div style="margin-top: 3rem">
+                            <b-alert
+                                    :show="dismissCountDown"
+                                    dismissible
+                                    variant="danger"
+                                    @dismissed="dismissCountDown=0"
+                                    @dismiss-count-down="countDownChanged">
+                                <h4 class="alert-heading">
+                                    Error !</h4>
+                                <p>
+                                    {{this.errorMessage}}
+                                </p>
+                            </b-alert>
                             <div class="form-control-custom">
                                 <label class="grey-text" for="email">User Name</label>
                                 <el-input id="email" type="text" v-model="userName">
@@ -19,21 +29,25 @@
 
                             <div class="form-control-custom">
                                 <label class="grey-text" for="password">Password </label>
-                                <el-input id="password" :type="pwdType" v-model="password" placeholder="password" show-password="">
+                                <el-input id="password" type="password" v-model="password" placeholder="password"
+                                          show-password="">
                                 </el-input>
                             </div>
 
                             <div class="form-control-custom">
                                 <label class="grey-text" for="password">Confirm Password </label>
-                                <el-input id="conformPassword" :type="confirmPwdType" show-password v-model="confirmPassword" placeholder="confirm password"
+                                <el-input id="conformPassword" type="password" show-password
+                                          v-model="confirmPassword" placeholder="confirm password"
                                           @keyup.enter.native="signUp">
                                 </el-input>
                             </div>
 
                             <div class="row d-flex justify-content-center form-control-custom">
                                 <div class="">
-                                    <el-button round class="btn-block z-depth-1 text-white" style="background: #1867c0" @click.native="signUp" :disabled="signUpInProgress">
-                                        <strong class="text-white">Sign up&nbsp; <i class="fa fa-sign-in" aria-hidden="false"></i></strong>
+                                    <el-button round class="btn-block z-depth-1 text-white" style="background: #1867c0"
+                                               @click.native="signUp" :disabled="signUpInProgress">
+                                        <strong class="text-white">Sign up&nbsp; <i class="fa fa-sign-in"
+                                                                                    aria-hidden="false"></i></strong>
                                         <span v-if="signUpInProgress">
                                                 <i class="fa fa-spinner fa-pulse fa-fw"></i>
                                             </span>
@@ -68,38 +82,21 @@
             return {
                 userName: null,
                 password: null,
-                confirmPassword:null,
-                pwdType:'password',
-                confirmPwdType:'password',
-                iconClass: 'fa fa-eye',
-                confirmIconClass: 'fa fa-eye',
-                altText:'abc',
+                confirmPassword: null,
+                altText: 'abc',
                 signUpInProgress: false,
+                dismissSecs: 5,
+                dismissCountDown: 0,
+                errorMessage: null,
             }
         },
         methods: {
-            showPwd(){
-                if(this.pwdType === 'password'){
-                    this.pwdType = 'text'
-                    this.iconClass = 'fa fa-eye-slash'
-
-                }
-                else {
-                    this.pwdType = 'password'
-                    this.iconClass = 'fa fa-eye'
-                }
+            countDownChanged(dismissCountDown) {
+                this.dismissCountDown = dismissCountDown
             },
-
-            showConfirmPwd(){
-                if(this.confirmPwdType === 'password'){
-                    this.confirmPwdType = 'text'
-                    this.confirmIconClass = 'fa fa-eye-slash'
-
-                }
-                else {
-                    this.confirmPwdType = 'password'
-                    this.confirmIconClass = 'fa fa-eye'
-                }
+            showAlert(message) {
+                this.errorMessage = message;
+                this.dismissCountDown = this.dismissSecs
             },
 
             signUp() {
@@ -117,28 +114,28 @@
                             this.$router.push({name: 'home'});
                         } else {
                             this.signUpInProgress = false
-                            showErrorDialog(this.$swal, res.data.errorMessage);
+                            // showErrorDialog(this.$swal, res.data.errorMessage);
+                            this.showAlert(res.data.errorMessage);
                         }
                     }).catch(err => {
                         this.signUpInProgress = false
-                        showErrorDialog(this.$swal, err.message);
+                        // showErrorDialog(this.$swal, err.message);
+                        this.showAlert(err.message);
                     });
                 }
             },
 
-            validateData(){
-                if(!this.userName){
-                    showWarningDialog(this.$swal, "Please Enter User Name")
+            validateData() {
+                if (!this.userName) {
+                    this.showAlert( "Please Enter User Name");
                     return false;
-                }
-                else if(!this.password ){
-                    showWarningDialog(this.$swal, "Please Enter Password")
+                } else if (!this.password) {
+                    this.showAlert("Please Enter Password")
                     return false;
-                }
-                else if(this.password === this.confirmPassword)
+                } else if (this.password === this.confirmPassword)
                     return true;
                 else {
-                    showWarningDialog(this.$swal, "Password is not same as confirm password, please check")
+                    this.showAlert("Password is not same as confirm password, please check")
                     return false;
                 }
             }
@@ -203,6 +200,13 @@
         width: 100%;
     }
 
+    .above {
+        position: absolute;
+        top: -1vw;
+        left: 0;
+        width: 90%;
+        right: 0;
+    }
 
     @media (max-width: 575.98px) {
         .content {

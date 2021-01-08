@@ -19,6 +19,10 @@
               </span>
 
                 <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="changePassword"><i class="fa fa-lock" aria-hidden="true">
+                    </i>
+                        <span @click="changePassword()">Change Password</span>
+                    </el-dropdown-item>
                     <el-dropdown-item command="logout"><i class="fa fa-sign-out" aria-hidden="true">
                     </i>
                         <span @click="logout">Logout</span>
@@ -105,6 +109,9 @@
             },
             logout() {
                 logout(localStorage, this.$router);
+            },
+            changePassword(){
+                this.$router.push('changePassword')
             }
         },
         mounted() {

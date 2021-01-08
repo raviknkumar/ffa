@@ -96,6 +96,14 @@ export const routes = [
         })
     },
     {
+        path: '/changePassword',
+        name: 'Change Password',
+        component: () => import('@/components/login/changePassword'),
+        props: (route) => ({
+            shop:{...route.params}
+        })
+    },
+    {
         path: '*',
         name: 'not found',
         component: NotFound,

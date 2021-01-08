@@ -1,73 +1,67 @@
 <template>
     <b-container class="dashboard-container">
-        <b-row class="dashboard-text">
-
-            <b-col :span="8">
-                <b-row>
-                    <img src="https://img.icons8.com/color/70/000000/shop.png">
-                </b-row>
-                <b-row>
+        <div class="row">
+            <div class="col-12 col-sm-6 d-flex flex-column align-items-center">
+                <div>
+                    <img src="https://img.icons8.com/color/70/000000/shop.png" alt="Shop">
+                </div>
+                <div>
                     <el-button type="success" plain @click="navigateTo('/store')"> ManageShops
                     </el-button>
-                </b-row>
-            </b-col>
-
-            <b-col :span="8">
-                <b-row>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 d-flex flex-column align-items-center">
+                <div>
                     <img src="https://img.icons8.com/color/70/000000/download.png">
-                </b-row>
-                <b-row>
+                </div>
+                <div>
                     <el-button type="success" plain @click="navigateTo('/order')"> DownloadOrders
                     </el-button>
-                </b-row>
-            </b-col>
-        </b-row>
-        <b-row>
-
-            <b-col :span="8">
-                <b-row type="flex">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-sm-6 d-flex flex-column align-items-center">
+                <div>
                     <img src="https://img.icons8.com/color/70/000000/new--v1.png">
-                </b-row>
-                <b-row>
+                </div>
+                <div>
                     <el-button type="primary" plain @click="navigateTo('/brand')"> Manage Brands
                     </el-button>
-                </b-row>
-            </b-col>
-
-            <b-col :span="8">
-                <b-row type="flex">
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 d-flex flex-column align-items-center">
+                <div>
                     <img src="https://img.icons8.com/color/70/000000/shopping-cart.png">
-                </b-row>
-                <b-row>
+                </div>
+                <div>
                     <el-button type="warning" plain @click="navigateTo('/item')"> Manage Items
                     </el-button>
-                </b-row>
-            </b-col>
+                </div>
+            </div>
+        </div>
 
-        </b-row>
-        <b-row>
-
-            <b-col :span="8">
-                <b-row type="flex">
+        <div class="row">
+            <div class="col-12 col-sm-6 d-flex flex-column align-items-center">
+                <div>
                     <img src="https://img.icons8.com/cute-clipart/70/000000/purchase-order.png">
-                </b-row>
-                <b-row>
+                </div>
+                <div>
                     <el-button type="primary" plain @click="navigateTo('/beats')"> Manage Orders
                     </el-button>
-                </b-row>
-            </b-col>
-
-            <b-col :span="8">
-                <b-row type="flex">
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 d-flex flex-column align-items-center">
+                <div>
                     <img src="https://img.icons8.com/color/70/000000/combo-chart.png">
-                </b-row>
-                <b-row>
+                </div>
+                <div>
                     <el-button type="primary" plain @click="navigateTo('/metrics')"> Metrics
                     </el-button>
-                </b-row>
-            </b-col>
+                </div>
+            </div>
+        </div>
 
-        </b-row>
     </b-container>
 </template>
 
@@ -86,6 +80,7 @@
 <style scoped>
     .dashboard-container {
         width: 100%;
+        min-height: 70vh;
         justify-content: center;
         alignment: center;
     }

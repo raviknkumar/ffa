@@ -75,10 +75,6 @@
                 </div>
 
             </el-tab-pane>
-
-            <el-tab-pane label="reports">
-                Reports
-            </el-tab-pane>
         </el-tabs>
     </div>
 </template>
